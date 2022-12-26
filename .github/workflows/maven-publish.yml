@@ -141,7 +141,7 @@ jobs:
         cd -
         cd WISE_Application/WISE_Project/java
         mvn versions:set -DnewVersion=${{ steps.version-numbers.outputs.prometheus_version }}
-        mvn versions:use-dep-version -Dincludes=ca.hss.times:WTime -DdepVersion=${{ steps.version-numbers.outputs.wtime_version }} -DforceVersion=true
+        mvn versions:use-dep-version -Dincludes=ca.hss.times:wtime -DdepVersion=${{ steps.version-numbers.outputs.wtime_version }} -DforceVersion=true
         mvn versions:use-dep-version -Dincludes=ca.wise:grid -DdepVersion=${{ steps.version-numbers.outputs.prometheus_version }} -DforceVersion=true
         mvn versions:use-dep-version -Dincludes=ca.wise:fire_engine -DdepVersion=${{ steps.version-numbers.outputs.prometheus_version }} -DforceVersion=true
         mvn versions:use-dep-version -Dincludes=ca.wise:weather -DdepVersion=${{ steps.version-numbers.outputs.prometheus_version }} -DforceVersion=true
