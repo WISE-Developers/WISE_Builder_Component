@@ -234,6 +234,46 @@ jobs:
     - name: Tag the repositories
       id: last-tags
       run: |
+        cd WISE_Communications_Module
+        git config user.name github-actions
+        git config user.email github-actions@github.com
+        git tag -a Builder_${{ steps.version-numbers.outputs.prometheus_version }} -m "W.I.S.E. Builder release on $(date +'%Y-%m-%d') for commit $(git rev-parse HEAD)"
+        cd -
+        cd WISE_Java_API
+        git config user.name github-actions
+        git config user.email github-actions@github.com
+        git tag -a Builder_${{ steps.version-numbers.outputs.prometheus_version }} -m "W.I.S.E. Builder release on $(date +'%Y-%m-%d') for commit $(git rev-parse HEAD)"
+        cd -
+        cd WISE_FWI_Module
+        git config user.name github-actions
+        git config user.email github-actions@github.com
+        git tag -a Builder_${{ steps.version-numbers.outputs.prometheus_version }} -m "W.I.S.E. Builder release on $(date +'%Y-%m-%d') for commit $(git rev-parse HEAD)"
+        cd -
+        cd WISE_FBP_Module
+        git config user.name github-actions
+        git config user.email github-actions@github.com
+        git tag -a Builder_${{ steps.version-numbers.outputs.prometheus_version }} -m "W.I.S.E. Builder release on $(date +'%Y-%m-%d') for commit $(git rev-parse HEAD)"
+        cd -
+        cd WISE_Grid_Module
+        git config user.name github-actions
+        git config user.email github-actions@github.com
+        git tag -a Builder_${{ steps.version-numbers.outputs.prometheus_version }} -m "W.I.S.E. Builder release on $(date +'%Y-%m-%d') for commit $(git rev-parse HEAD)"
+        cd -
+        cd WISE_Weather_Module
+        git config user.name github-actions
+        git config user.email github-actions@github.com
+        git tag -a Builder_${{ steps.version-numbers.outputs.prometheus_version }} -m "W.I.S.E. Builder release on $(date +'%Y-%m-%d') for commit $(git rev-parse HEAD)"
+        cd -
+        cd WISE_Scenario_Growth_Module
+        git config user.name github-actions
+        git config user.email github-actions@github.com
+        git tag -a Builder_${{ steps.version-numbers.outputs.prometheus_version }} -m "W.I.S.E. Builder release on $(date +'%Y-%m-%d') for commit $(git rev-parse HEAD)"
+        cd -
+        cd WISE_Application
+        git config user.name github-actions
+        git config user.email github-actions@github.com
+        git tag -a Builder_${{ steps.version-numbers.outputs.prometheus_version }} -m "W.I.S.E. Builder release on $(date +'%Y-%m-%d') for commit $(git rev-parse HEAD)"
+        cd -
         cd REDapp_Lib
         git config user.name github-actions
         git config user.email github-actions@github.com
@@ -243,6 +283,70 @@ jobs:
         git config user.name github-actions
         git config user.email github-actions@github.com
         git tag -a Builder_${{ steps.version-numbers.outputs.prometheus_version }} -m "W.I.S.E. Builder release on $(date +'%Y-%m-%d') for commit $(git rev-parse HEAD)"
+        
+    - name: Push versions changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.WISE_PAT }}
+        repository: WISE-Developers/WISE_Communications_Module
+        directory: WISE_Communications_Module
+        tags: true
+        
+    - name: Push versions changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.WISE_PAT }}
+        repository: WISE-Developers/WISE_Java_API
+        directory: WISE_Java_API
+        tags: true
+        
+    - name: Push versions changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.WISE_PAT }}
+        repository: WISE-Developers/WISE_FWI_Module
+        directory: WISE_FWI_Module
+        tags: true
+        
+    - name: Push versions changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.WISE_PAT }}
+        repository: WISE-Developers/WISE_FBP_Module
+        directory: WISE_FBP_Module
+        tags: true
+        
+    - name: Push versions changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.WISE_PAT }}
+        repository: WISE-Developers/WISE_Grid_Module
+        directory: WISE_Grid_Module
+        tags: true
+        
+    - name: Push versions changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.WISE_PAT }}
+        repository: WISE-Developers/WISE_Weather_Module
+        directory: WISE_Weather_Module
+        tags: true
+        
+    - name: Push versions changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.WISE_PAT }}
+        repository: WISE-Developers/WISE_Scenario_Growth_Module
+        directory: WISE_Scenario_Growth_Module
+        tags: true
+        
+    - name: Push versions changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.WISE_PAT }}
+        repository: WISE-Developers/WISE_Application
+        directory: WISE_Application
+        tags: true
         
     - name: Push versions changes
       uses: ad-m/github-push-action@master
