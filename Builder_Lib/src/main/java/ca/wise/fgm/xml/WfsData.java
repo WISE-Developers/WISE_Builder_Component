@@ -108,9 +108,9 @@ import javax.xml.bind.annotation.XmlType;
     "width"
 })
 @XmlSeeAlso({
-    ca.cwfgm.psaas.xml.Data.Job.Inputs.Files.FuelPatchFiles.FuelPatchFile.Geographic.Coordinates.class,
-    ca.cwfgm.psaas.xml.Data.Job.Inputs.Files.WeatherPatchFiles.PatchFile.Geographic.Coordinates.class,
-    ca.cwfgm.psaas.xml.Data.Job.Inputs.Ignitions.Ignition.Coordinates.class
+    ca.wise.fgm.xml.Data.Job.Inputs.Files.FuelPatchFiles.FuelPatchFile.Geographic.Coordinates.class,
+    ca.wise.fgm.xml.Data.Job.Inputs.Files.WeatherPatchFiles.PatchFile.Geographic.Coordinates.class,
+    ca.wise.fgm.xml.Data.Job.Inputs.Ignitions.Ignition.Coordinates.class
 })
 public class WfsData {
 
