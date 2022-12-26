@@ -1,0 +1,26 @@
+component,name,url,license
+"builder,manager",Apache Commons CLI,https://commons.apache.org/proper/commons-cli/,apache-2
+builder,Apache Commons Collections,https://commons.apache.org/proper/commons-collections/,apache-2
+"builder,manager",Apache Commons Compress,https://commons.apache.org/proper/commons-compress/,apache-2
+builder,Apache Commons CSV,https://commons.apache.org/proper/commons-csv/,apache-2
+builder,Apache Commons Math,http://commons.apache.org/proper/commons-math/,apache-2
+manager,Apache Log4J 2,https://logging.apache.org/log4j/2.x/,apache-2
+builder,Apache POI,https://poi.apache.org/,apache-2
+"wise_win,wise_lin",Boost C++ Libraries,https://www.boost.org/,boost
+"wise_win,wise_lin",Eclipse Paho MQTT C++ Client Library,https://www.eclipse.org/paho/clients/cpp/,eclipse-1
+"builder,manager",Eclipse Paho Java Client,https://www.eclipse.org/paho/clients/java/,eclipse-1
+"wise_win,wise_lin",GDAL: Geospatial Data Abstraction Library,https://www.gdal.org/,mit
+"builder,manager",gRPC: An RPC library and framework,https://grpc.io/,apache-2
+"builder,manager",Guava: Google Core Libraries for Java,https://github.com/google/guava,apache-2
+"builder,manager",HSS: Java Library,https://github.com/HeartlandSoftware/HSS_Java,apache-2
+builder,HSS: Math Library,,
+"builder,manager",Jackson JSON Parser,https://github.com/FasterXML/jackson-core,apache-2
+"builder,manager",Java Native Access (JNA),https://github.com/java-native-access/jna,apache-2
+"wise_win,wise_lin",JSON for Modern C++,https://github.com/nlohmann/json,mit
+"wise_win,wise_lin",Minizip,https://github.com/nmoinvaz/minizip,minizip
+manager,Moquette MQTT,https://projects.eclipse.org/projects/iot.moquette,eclipse-1
+manager,OSHI: Operating System & Hardware Information,https://github.com/oshi/oshi,oshi
+"builder,manager,wise_win,wise_lin",Protocol Buffers,https://developers.google.com/protocol-buffers/,google-proto
+manager,RSyntaxTextArea,http://bobbylight.github.io/RSyntaxTextArea/,bsd-syntax
+manager,Version Compare,https://github.com/G00fY2/version-compare,apache-2
+builder,WTime,https://github.com/HeartlandSoftware/WTime,apache-2
