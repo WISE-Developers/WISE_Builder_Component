@@ -365,145 +365,114 @@ jobs:
         directory: WISE_Builder_Component
         tags: true
 
-    - name: Create API Release Notes
-      id: api-notes
-      uses: mikepenz/release-changelog-builder-action@v3.5.0
-      with:
-        owner: WISE-Developers
-        repo: WISE_Java_API
-        path: WISE_Java_API
-        configuration: ../WISE_Builder_Component/notes-config.json
-        toTag: Builder_${{ steps.version-numbers.outputs.prometheus_version }}
+#     - name: Create API Release Notes
+#       id: api-notes
+#       uses: mikepenz/release-changelog-builder-action@v3.5.0
+#       with:
+#         owner: WISE-Developers
+#         repo: WISE_Java_API
+#         path: WISE_Java_API
+#         configuration: ../WISE_Builder_Component/notes-config.json
+#         toTag: Builder_${{ steps.version-numbers.outputs.prometheus_version }}
 #         fromTag: ${{ steps.last-tags.outputs.builder_tag }}
-      env:
-        GITHUB_TOKEN: ${{ secrets.WISE_PAT }}
+#       env:
+#         GITHUB_TOKEN: ${{ secrets.WISE_PAT }}
 
-    - name: Create FWI Release Notes
-      id: fwi-notes
-      uses: mikepenz/release-changelog-builder-action@v3.5.0
-      with:
-        owner: WISE-Developers
-        repo: WISE_FWI_Module
-        path: WISE_FWI_Module
-        configuration: ../WISE_Builder_Component/notes-config.json
-        toTag: Builder_${{ steps.version-numbers.outputs.prometheus_version }}
+#     - name: Create FWI Release Notes
+#       id: fwi-notes
+#       uses: mikepenz/release-changelog-builder-action@v3.5.0
+#       with:
+#         owner: WISE-Developers
+#         repo: WISE_FWI_Module
+#         path: WISE_FWI_Module
+#         configuration: ../WISE_Builder_Component/notes-config.json
+#         toTag: Builder_${{ steps.version-numbers.outputs.prometheus_version }}
 #         fromTag: ${{ steps.last-tags.outputs.builder_tag }}
-      env:
-        GITHUB_TOKEN: ${{ secrets.WISE_PAT }}
+#       env:
+#         GITHUB_TOKEN: ${{ secrets.WISE_PAT }}
 
-    - name: Create Fuel Release Notes
-      id: fuel-notes
-      uses: mikepenz/release-changelog-builder-action@v3.5.0
-      with:
-        owner: WISE-Developers
-        repo: WISE_FBP_Module
-        path: WISE_FBP_Module
-        configuration: ../WISE_Builder_Component/notes-config.json
-        toTag: Builder_${{ steps.version-numbers.outputs.prometheus_version }}
+#     - name: Create Fuel Release Notes
+#       id: fuel-notes
+#       uses: mikepenz/release-changelog-builder-action@v3.5.0
+#       with:
+#         owner: WISE-Developers
+#         repo: WISE_FBP_Module
+#         path: WISE_FBP_Module
+#         configuration: ../WISE_Builder_Component/notes-config.json
+#         toTag: Builder_${{ steps.version-numbers.outputs.prometheus_version }}
 #         fromTag: ${{ steps.last-tags.outputs.builder_tag }}
-      env:
-        GITHUB_TOKEN: ${{ secrets.WISE_PAT }}
+#       env:
+#         GITHUB_TOKEN: ${{ secrets.WISE_PAT }}
 
-    - name: Create Grid Release Notes
-      id: grid-notes
-      uses: mikepenz/release-changelog-builder-action@v3.5.0
-      with:
-        owner: WISE-Developers
-        repo: WISE_Grid_Module
-        path: WISE_Grid_Module
-        configuration: ../WISE_Builder_Component/notes-config.json
-        toTag: Builder_${{ steps.version-numbers.outputs.prometheus_version }}
+#     - name: Create Grid Release Notes
+#       id: grid-notes
+#       uses: mikepenz/release-changelog-builder-action@v3.5.0
+#       with:
+#         owner: WISE-Developers
+#         repo: WISE_Grid_Module
+#         path: WISE_Grid_Module
+#         configuration: ../WISE_Builder_Component/notes-config.json
+#         toTag: Builder_${{ steps.version-numbers.outputs.prometheus_version }}
 #         fromTag: ${{ steps.last-tags.outputs.builder_tag }}
-      env:
-        GITHUB_TOKEN: ${{ secrets.WISE_PAT }}
+#       env:
+#         GITHUB_TOKEN: ${{ secrets.WISE_PAT }}
 
-    - name: Create Weather Release Notes
-      id: weather-notes
-      uses: mikepenz/release-changelog-builder-action@v3.5.0
-      with:
-        owner: WISE-Developers
-        repo: WISE_Weather_Module
-        path: WISE_Weather_Module
-        configuration: ../WISE_Builder_Component/notes-config.json
-        toTag: Builder_${{ steps.version-numbers.outputs.prometheus_version }}
+#     - name: Create Weather Release Notes
+#       id: weather-notes
+#       uses: mikepenz/release-changelog-builder-action@v3.5.0
+#       with:
+#         owner: WISE-Developers
+#         repo: WISE_Weather_Module
+#         path: WISE_Weather_Module
+#         configuration: ../WISE_Builder_Component/notes-config.json
+#         toTag: Builder_${{ steps.version-numbers.outputs.prometheus_version }}
 #         fromTag: ${{ steps.last-tags.outputs.builder_tag }}
-      env:
-        GITHUB_TOKEN: ${{ secrets.WISE_PAT }}
+#       env:
+#         GITHUB_TOKEN: ${{ secrets.WISE_PAT }}
 
-    - name: Create Scenario Growth Release Notes
-      id: growth-notes
-      uses: mikepenz/release-changelog-builder-action@v3.5.0
-      with:
-        owner: WISE-Developers
-        repo: WISE_Scenario_Growth_Module
-        path: WISE_Scenario_Growth_Module
-        configuration: ../WISE_Builder_Component/notes-config.json
-        toTag: Builder_${{ steps.version-numbers.outputs.prometheus_version }}
+#     - name: Create Scenario Growth Release Notes
+#       id: growth-notes
+#       uses: mikepenz/release-changelog-builder-action@v3.5.0
+#       with:
+#         owner: WISE-Developers
+#         repo: WISE_Scenario_Growth_Module
+#         path: WISE_Scenario_Growth_Module
+#         configuration: ../WISE_Builder_Component/notes-config.json
+#         toTag: Builder_${{ steps.version-numbers.outputs.prometheus_version }}
 #         fromTag: ${{ steps.last-tags.outputs.builder_tag }}
-      env:
-        GITHUB_TOKEN: ${{ secrets.WISE_PAT }}
+#       env:
+#         GITHUB_TOKEN: ${{ secrets.WISE_PAT }}
 
-    - name: Create Project Release Notes
-      id: app-notes
-      uses: mikepenz/release-changelog-builder-action@v3.5.0
-      with:
-        owner: WISE-Developers
-        repo: WISE_Application
-        path: WISE_Application
-        configuration: ../WISE_Builder_Component/notes-config.json
-        toTag: Builder_${{ steps.version-numbers.outputs.prometheus_version }}
+#     - name: Create Project Release Notes
+#       id: app-notes
+#       uses: mikepenz/release-changelog-builder-action@v3.5.0
+#       with:
+#         owner: WISE-Developers
+#         repo: WISE_Application
+#         path: WISE_Application
+#         configuration: ../WISE_Builder_Component/notes-config.json
+#         toTag: Builder_${{ steps.version-numbers.outputs.prometheus_version }}
 #         fromTag: ${{ steps.last-tags.outputs.builder_tag }}
-      env:
-        GITHUB_TOKEN: ${{ secrets.WISE_PAT }}
+#       env:
+#         GITHUB_TOKEN: ${{ secrets.WISE_PAT }}
 
-    - name: Create Builder Release Notes
-      id: builder-notes
-      uses: mikepenz/release-changelog-builder-action@v3.5.0
-      with:
-        owner: WISE-Developers
-        repo: WISE_Builder_Component
-        path: WISE_Builder_Component
-        configuration: notes-config.json
-        toTag: Builder_${{ steps.version-numbers.outputs.prometheus_version }}
+#     - name: Create Builder Release Notes
+#       id: builder-notes
+#       uses: mikepenz/release-changelog-builder-action@v3.5.0
+#       with:
+#         owner: WISE-Developers
+#         repo: WISE_Builder_Component
+#         path: WISE_Builder_Component
+#         configuration: notes-config.json
+#         toTag: Builder_${{ steps.version-numbers.outputs.prometheus_version }}
 #         fromTag: ${{ steps.last-tags.outputs.builder_tag }}
-      env:
-        GITHUB_TOKEN: ${{ secrets.WISE_PAT }}
+#       env:
+#         GITHUB_TOKEN: ${{ secrets.WISE_PAT }}
 
     - name: Create release
       uses: softprops/action-gh-release@v1
       with:
         name: ${{ steps.version-numbers.outputs.prometheus_version }}
-        body: |
-          # W.I.S.E. Builder
-          
-          ${{ steps.builder-notes.outputs.changelog }}
-          
-          # W.I.S.E. Project Library
-          
-          ${{ steps.app-notes.outputs.changelog }}
-          
-          # W.I.S.E. Scenario Growth Module
-          
-          ${{ steps.growth-notes.outputs.changelog }}
-          
-          # W.I.S.E. Weather Module
-          
-          ${{ steps.weather-notes.outputs.changelog }}
-          
-          # W.I.S.E. Grid Module
-          
-          ${{ steps.grid-notes.outputs.changelog }}
-          
-          # W.I.S.E. FBP Module
-          
-          ${{ steps.fuel-notes.outputs.changelog }}
-          
-          # W.I.S.E. FWI Module
-          
-          ${{ steps.fwi-notes.outputs.changelog }}
-          
-          # W.I.S.E. Java API
-          
-          ${{ steps.api-notes.outputs.changelog }}
+        body: Release ${{ steps.version-numbers.output.prometheus_version }}
         files: WISE_Builder_Component/*.zip
         tag_name: refs/tags/Builder_${{ steps.version-numbers.outputs.prometheus_version }}
