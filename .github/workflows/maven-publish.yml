@@ -181,7 +181,7 @@ jobs:
         cd WISE_Communications_Module/WISE_Defaults/java
         mvn --batch-mode install
         cd -
-        cd WISE_Java_API/java
+        cd WISE_Java_API
         mvn --batch-mode install
         cd -
         cd WISE_FWI_Module/java
