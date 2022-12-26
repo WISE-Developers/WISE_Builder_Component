@@ -68,7 +68,9 @@ jobs:
         ref: working/wise
     - uses: actions/checkout@v3
       with:
+        repository: WISE-Developers/WISE_Builder_Component
         path: WISE_Builder_Component
+        token: ${{ secrets.WISE_PAT }}
 
     - name: Set up JDK 8
       uses: actions/setup-java@v3
