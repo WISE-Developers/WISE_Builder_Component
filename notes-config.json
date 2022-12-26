@@ -1,5 +1,9 @@
 {
   "tag_resolver": {
-    "method": "sort"
+    "method": "sort",
+    "filter": {
+      "pattern": "Builder_(.+)",
+      "flags": "gu"
+    }
   }
 }
