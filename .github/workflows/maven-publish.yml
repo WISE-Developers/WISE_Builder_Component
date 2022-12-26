@@ -1,0 +1,471 @@
+# This workflow will build a package using Maven and then publish it to GitHub packages when a release is created
+# For more information see: https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md#apache-maven-with-a-settings-path
+
+name: Maven Package
+
+on:
+  workflow_dispatch
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: read
+
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        repository: WISE-Developers/versions
+        path: versions
+        token: ${{ secrets.WISE_PAT }}
+    - uses: actions/checkout@v3
+      with:
+        repository: WISE-Developers/WISE_Communications_Module
+        path: WISE_Communications_Module
+        token: ${{ secrets.WISE_PAT }}
+    - uses: actions/checkout@v3
+      with:
+        repository: WISE-Developers/WISE_Java_API
+        path: WISE_Java_API
+        token: ${{ secrets.WISE_PAT }}
+    - uses: actions/checkout@v3
+      with:
+        repository: WISE-Developers/WISE_FWI_Module
+        path: WISE_FWI_Module
+        token: ${{ secrets.WISE_PAT }}
+    - uses: actions/checkout@v3
+      with:
+        repository: WISE-Developers/WISE_FBP_Module
+        path: WISE_FBP_Module
+        token: ${{ secrets.WISE_PAT }}
+    - uses: actions/checkout@v3
+      with:
+        repository: WISE-Developers/WISE_Grid_Module
+        path: WISE_Grid_Module
+        token: ${{ secrets.WISE_PAT }}
+    - uses: actions/checkout@v3
+      with:
+        repository: WISE-Developers/WISE_Weather_Module
+        path: WISE_Weather_Module
+        token: ${{ secrets.WISE_PAT }}
+    - uses: actions/checkout@v3
+      with:
+        repository: WISE-Developers/WISE_Scenario_Growth_Module
+        path: WISE_Scenario_Growth_Module
+        token: ${{ secrets.WISE_PAT }}
+    - uses: actions/checkout@v3
+      with:
+        repository: WISE-Developers/WISE_Application
+        path: WISE_Application
+        token: ${{ secrets.WISE_PAT }}
+    - uses: actions/checkout@v3
+      with:
+        repository: WISE-Developers/REDapp_Lib
+        path: REDapp_Lib
+        token: ${{ secrets.WISE_PAT }}
+        ref: working/wise
+    - uses: actions/checkout@v3
+      with:
+        path: WISE_Builder_Component
+
+    - name: Set up JDK 8
+      uses: actions/setup-java@v3
+      with:
+        java-version: '8'
+        distribution: 'temurin'
+        server-id: github
+    
+    - name: Setup the Maven configuration file
+      uses: whelk-io/maven-settings-xml-action@v20
+      with:
+        servers: '[{ "id": "github", "username": "spydmobile", "password": "${{ secrets.WISE_PAT }}" }, { "id": "github_hss", "username": "tredpath", "password": "${{ secrets.HSS_PAT }}" }]'
+
+    - name: Load values from versions
+      id: version-numbers
+      shell: pwsh
+      run: |
+        $versions = ConvertFrom-StringData (Get-Content versions/versions.properties -raw)
+        echo "Updating to version $($versions.prometheus)"
+        echo "prometheus_version=$($versions.prometheus)" >> $env:GITHUB_OUTPUT
+        echo "hss_math_version=$($versions.hss_math)" >> $env:GITHUB_OUTPUT
+        echo "wtime_version=$($versions.wtime)" >> $env:GITHUB_OUTPUT
+        echo "hss_java_version=$($versions.hss_java)" >> $env:GITHUB_OUTPUT
+      
+    - name: Update the version
+        cd WISE_Communications_Module/WISE_Defaults/java
+        mvn versions:set -DnewVersion=${{ steps.version-numbers.outputs.prometheus_version }}
+        mvn versions:commit
+        cd -
+        cd WISE_Java_API
+        mvn versions:set -DnewVersion=${{ steps.version-numbers.outputs.prometheus_version }}
+        mvn versions:commit
+        cd -
+        cd WISE_FWI_Module/java
+        mvn versions:set -DnewVersion=${{ steps.version-numbers.outputs.prometheus_version }}
+        mvn versions:use-dep-version -Dincludes=ca.hss:hss-java -DdepVersion=${{ steps.version-numbers.outputs.hss_java_version }} -DforceVersion=true
+        mvn versions:use-dep-version -Dincludes=ca.hss.times:WTime -DdepVersion=${{ steps.version-numbers.outputs.wtime_version }} -DforceVersion=true
+        mvn versions:commit
+        cd -
+        cd WISE_FBP_Module/java
+        mvn versions:set -DnewVersion=${{ steps.version-numbers.outputs.prometheus_version }}
+        mvn versions:use-dep-version -Dincludes=ca.hss:hss-java -DdepVersion=${{ steps.version-numbers.outputs.hss_java_version }} -DforceVersion=true
+        mvn versions:use-dep-version -Dincludes=ca.hss.times:WTime -DdepVersion=${{ steps.version-numbers.outputs.wtime_version }} -DforceVersion=true
+        mvn versions:use-dep-version -Dincludes=ca.hss:math -DdepVersion=${{ steps.version-numbers.outputs.hss_math_version }} -DforceVersion=true
+        mvn versions:use-dep-version -Dincludes=ca.wise:FWI -DdepVersion=${{ steps.version-numbers.outputs.prometheus_version }} -DforceVersion=true
+        mvn versions:commit
+        cd -
+        cd WISE_Grid_Module/java
+        mvn versions:set -DnewVersion=${{ steps.version-numbers.outputs.prometheus_version }}
+        mvn versions:use-dep-version -Dincludes=ca.hss.times:WTime -DdepVersion=${{ steps.version-numbers.outputs.wtime_version }} -DforceVersion=true
+        mvn versions:use-dep-version -Dincludes=ca.hss:math -DdepVersion=${{ steps.version-numbers.outputs.hss_math_version }} -DforceVersion=true
+        mvn versions:use-dep-version -Dincludes=ca.wise:Fuel -DdepVersion=${{ steps.version-numbers.outputs.prometheus_version }} -DforceVersion=true
+        mvn versions:commit
+        cd -
+        cd WISE_Weather_Module/java
+        mvn versions:set -DnewVersion=${{ steps.version-numbers.outputs.prometheus_version }}
+        mvn versions:use-dep-version -Dincludes=ca.hss:hss-java -DdepVersion=${{ steps.version-numbers.outputs.hss_java_version }} -DforceVersion=true
+        mvn versions:use-dep-version -Dincludes=ca.hss.times:WTime -DdepVersion=${{ steps.version-numbers.outputs.wtime_version }} -DforceVersion=true
+        mvn versions:use-dep-version -Dincludes=ca.hss:math -DdepVersion=${{ steps.version-numbers.outputs.hss_math_version }} -DforceVersion=true
+        mvn versions:use-dep-version -Dincludes=ca.wise:Grid -DdepVersion=${{ steps.version-numbers.outputs.prometheus_version }} -DforceVersion=true
+        mvn versions:commit
+        cd -
+        cd WISE_Scenario_Growth_Module/java
+        mvn versions:set -DnewVersion=${{ steps.version-numbers.outputs.prometheus_version }}
+        mvn versions:use-dep-version -Dincludes=ca.hss.times:WTime -DdepVersion=${{ steps.version-numbers.outputs.wtime_version }} -DforceVersion=true
+        mvn versions:use-dep-version -Dincludes=ca.hss:math -DdepVersion=${{ steps.version-numbers.outputs.hss_math_version }} -DforceVersion=true
+        mvn versions:use-dep-version -Dincludes=ca.wise:Grid -DdepVersion=${{ steps.version-numbers.outputs.prometheus_version }} -DforceVersion=true
+        mvn versions:commit
+        cd -
+        cd WISE_Application/WISE_Project/java
+        mvn versions:set -DnewVersion=${{ steps.version-numbers.outputs.prometheus_version }}
+        mvn versions:use-dep-version -Dincludes=ca.hss.times:WTime -DdepVersion=${{ steps.version-numbers.outputs.wtime_version }} -DforceVersion=true
+        mvn versions:use-dep-version -Dincludes=ca.wise:Grid -DdepVersion=${{ steps.version-numbers.outputs.prometheus_version }} -DforceVersion=true
+        mvn versions:use-dep-version -Dincludes=ca.wise:fire_engine -DdepVersion=${{ steps.version-numbers.outputs.prometheus_version }} -DforceVersion=true
+        mvn versions:use-dep-version -Dincludes=ca.wise:Weather -DdepVersion=${{ steps.version-numbers.outputs.prometheus_version }} -DforceVersion=true
+        mvn versions:commit
+        cd -
+        cd REDapp_Lib
+        mvn versions:set -DnewVersion=${{ steps.version-numbers.outputs.prometheus_version }}
+        mvn versions:use-dep-version -Dincludes=ca.hss:hss-java -DdepVersion=${{ steps.version-numbers.outputs.hss_java_version }} -DforceVersion=true
+        mvn versions:use-dep-version -Dincludes=ca.hss.times:WTime -DdepVersion=${{ steps.version-numbers.outputs.wtime_version }} -DforceVersion=true
+        mvn versions:use-dep-version -Dincludes=ca.wise:Fuel -DdepVersion=${{ steps.version-numbers.outputs.prometheus_version }} -DforceVersion=true
+        mvn versions:use-dep-version -Dincludes=ca.wise:Weather -DdepVersion=${{ steps.version-numbers.outputs.prometheus_version }} -DforceVersion=true
+        mvn versions:commit
+        cd -
+        cd WISE_Builder_Component/Builder_Lib
+        mvn versions:set -DnewVersion=${{ steps.version-numbers.outputs.prometheus_version }}
+        mvn versions:use-dep-version -Dincludes=ca.hss:hss-java -DdepVersion=${{ steps.version-numbers.outputs.hss_java_version }} -DforceVersion=true
+        mvn versions:use-dep-version -Dincludes=ca.hss.times:WTime -DdepVersion=${{ steps.version-numbers.outputs.wtime_version }} -DforceVersion=true
+        mvn versions:use-dep-version -Dincludes=ca.wise:project -DdepVersion=${{ steps.version-numbers.outputs.prometheus_version }} -DforceVersion=true
+        mvn versions:use-dep-version -Dincludes=ca.wise:wise-defaults -DdepVersion=${{ steps.version-numbers.outputs.prometheus_version }} -DforceVersion=true
+        mvn versions:use-dep-version -Dincludes=ca.wise:javaapi -DdepVersion=${{ steps.version-numbers.outputs.prometheus_version }} -DforceVersion=true
+        mvn versions:use-dep-version -Dincludes=ca.cwfgm:REDapp_Lib -DdepVersion=${{ steps.version-numbers.outputs.prometheus_version }} -DforceVersion=true
+        mvn versions:commit
+        cd -
+        cd WISE_Builder_Component/Builder
+        mvn versions:set -DnewVersion=${{ steps.version-numbers.outputs.prometheus_version }}
+        mvn versions:use-dep-version -Dincludes=ca.hss:hss-java -DdepVersion=${{ steps.version-numbers.outputs.hss_java_version }} -DforceVersion=true
+        mvn versions:use-dep-version -Dincludes=ca.hss.times:WTime -DdepVersion=${{ steps.version-numbers.outputs.wtime_version }} -DforceVersion=true
+        mvn versions:use-dep-version -Dincludes=ca.wise:WISE_Builder_Lib -DdepVersion=${{ steps.version-numbers.outputs.prometheus_version }} -DforceVersion=true
+        mvn versions:use-dep-version -Dincludes=ca.cwfgm:REDapp_Lib -DdepVersion=${{ steps.version-numbers.outputs.prometheus_version }} -DforceVersion=true
+        mvn versions:use-dep-version -Dincludes=ca.wise:wise-defaults -DdepVersion=${{ steps.version-numbers.outputs.prometheus_version }} -DforceVersion=true
+        mvn versions:commit
+        cd -
+    
+    - name: Build the libraries
+      id: library-build
+      run: |
+        cd WISE_Communications_Module/WISE_Defaults/java
+        mvn --batch-mode install
+        cd -
+        cd WISE_Java_API/java
+        mvn --batch-mode install
+        cd -
+        cd WISE_FWI_Module/java
+        mvn --batch-mode install
+        mvn --batch-mode deploy
+        cd -
+        cd WISE_FBP_Module/java
+        mvn --batch-mode install
+        mvn --batch-mode deploy
+        cd -
+        cd WISE_Grid_Module/java
+        mvn --batch-mode install
+        mvn --batch-mode deploy
+        cd -
+        cd WISE_Weather_Module/java
+        mvn --batch-mode install
+        mvn --batch-mode deploy
+        cd -
+        cd WISE_Scenario_Growth_Module/java
+        mvn --batch-mode install
+        mvn --batch-mode deploy
+        cd -
+        cd WISE_Application/WISE_Project/java
+        mvn --batch-mode install
+        cd -
+        cd REDapp_Lib
+        mvn --batch-mode install
+        cd -
+        cd WISE_Builder_Component/Builder_Lib
+        mvn --batch-mode install
+        cd -
+        cd WISE_Builder_Component/Builder
+        mvn --batch-mode package
+        APPLICATION_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec | cut -d "." -f2-)
+        APPLICATION_VERSION=$(echo "${APPLICATION_VERSION/-/.}")
+        echo "user_friendly_version=$APPLICATION_VERSION" >> $GITHUB_OUTPUT
+        CURRENT_DATE=$(date +'%Y%m%d')
+        echo "build_date=$CURRENT_DATE" >> $GITHUB_OUTPUT
+      env:
+        GITHUB_TOKEN: ${{ secrets.WISE_PAT }}
+    
+    - name: Archive generated files
+      shell: pwsh
+      run: |
+        cd WISE_Builder_Component
+        Compress-Archive -DestinationPath WISE_Builder-${{ steps.library-build.outputs.user_friendly_version }}.zip -Path Builder/target/WISE_Builder.jar,Builder/target/WISE_Builder_lib
+
+    - name: Tag the repositories
+      id: last-tags
+      run: |
+        git config user.name github-actions
+        git config user.email github-actions@github.com
+        cd WISE_Communications_Module
+        git tag -a Builder_${{ steps.version-numbers.outputs.prometheus_version }} -m "W.I.S.E. Builder release on $(date +'%Y-%m-%d') for commit $(git rev-parse HEAD)"
+        cd -
+        cd WISE_Java_API
+        git tag -a Builder_${{ steps.version-numbers.outputs.prometheus_version }} -m "W.I.S.E. Builder release on $(date +'%Y-%m-%d') for commit $(git rev-parse HEAD)"
+        cd -
+        cd WISE_FWI_Module
+        git tag -a Builder_${{ steps.version-numbers.outputs.prometheus_version }} -m "W.I.S.E. Builder release on $(date +'%Y-%m-%d') for commit $(git rev-parse HEAD)"
+        cd -
+        cd WISE_FBP_Module
+        git tag -a Builder_${{ steps.version-numbers.outputs.prometheus_version }} -m "W.I.S.E. Builder release on $(date +'%Y-%m-%d') for commit $(git rev-parse HEAD)"
+        cd -
+        cd WISE_Grid_Module
+        git tag -a Builder_${{ steps.version-numbers.outputs.prometheus_version }} -m "W.I.S.E. Builder release on $(date +'%Y-%m-%d') for commit $(git rev-parse HEAD)"
+        cd -
+        cd WISE_Weather_Module
+        git tag -a Builder_${{ steps.version-numbers.outputs.prometheus_version }} -m "W.I.S.E. Builder release on $(date +'%Y-%m-%d') for commit $(git rev-parse HEAD)"
+        cd -
+        cd WISE_Scenario_Growth_Module
+        git tag -a Builder_${{ steps.version-numbers.outputs.prometheus_version }} -m "W.I.S.E. Builder release on $(date +'%Y-%m-%d') for commit $(git rev-parse HEAD)"
+        cd -
+        cd WISE_Application
+        git tag -a Builder_${{ steps.version-numbers.outputs.prometheus_version }} -m "W.I.S.E. Builder release on $(date +'%Y-%m-%d') for commit $(git rev-parse HEAD)"
+        cd -
+        cd REDapp_Lib
+        git tag -a Builder_${{ steps.version-numbers.outputs.prometheus_version }} -m "W.I.S.E. Builder release on $(date +'%Y-%m-%d') for commit $(git rev-parse HEAD)"
+        cd -
+        cd WISE_Builder_Component
+        git tag -a Builder_${{ steps.version-numbers.outputs.prometheus_version }} -m "W.I.S.E. Builder release on $(date +'%Y-%m-%d') for commit $(git rev-parse HEAD)"
+        
+    - name: Push versions changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.WISE_PAT }}
+        repository: WISE-Developers/WISE_Communications_Module
+        directory: WISE_Communications_Module
+        tags: true
+        
+    - name: Push versions changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.WISE_PAT }}
+        repository: WISE-Developers/WISE_Java_API
+        directory: WISE_Java_API
+        tags: true
+        
+    - name: Push versions changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.WISE_PAT }}
+        repository: WISE-Developers/WISE_FWI_Module
+        directory: WISE_FWI_Module
+        tags: true
+        
+    - name: Push versions changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.WISE_PAT }}
+        repository: WISE-Developers/WISE_FBP_Module
+        directory: WISE_FBP_Module
+        tags: true
+        
+    - name: Push versions changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.WISE_PAT }}
+        repository: WISE-Developers/WISE_Grid_Module
+        directory: WISE_Grid_Module
+        tags: true
+        
+    - name: Push versions changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.WISE_PAT }}
+        repository: WISE-Developers/WISE_Weather_Module
+        directory: WISE_Weather_Module
+        tags: true
+        
+    - name: Push versions changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.WISE_PAT }}
+        repository: WISE-Developers/WISE_Scenario_Growth_Module
+        directory: WISE_Scenario_Growth_Module
+        tags: true
+        
+    - name: Push versions changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.WISE_PAT }}
+        repository: WISE-Developers/WISE_Application
+        directory: WISE_Application
+        tags: true
+        
+    - name: Push versions changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.WISE_PAT }}
+        repository: WISE-Developers/REDapp_Lib
+        directory: REDapp_Lib
+        tags: true
+        
+    - name: Push versions changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.WISE_PAT }}
+        repository: WISE-Developers/WISE_Builder_Component
+        directory: WISE_Builder_Component
+        tags: true
+
+    - name: Create API Release Notes
+      id: api-notes
+      uses: mikepenz/release-changelog-builder-action@v3.5.0
+      with:
+        owner: WISE-Developers
+        repo: WISE_Java_API
+        toTag: Builder_${{ steps.version-numbers.outputs.prometheus_version }}
+#         fromTag: ${{ steps.last-tags.outputs.builder_tag }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.WISE_PAT }}
+
+    - name: Create FWI Release Notes
+      id: fwi-notes
+      uses: mikepenz/release-changelog-builder-action@v3.5.0
+      with:
+        owner: WISE-Developers
+        repo: WISE_FWI_Module
+        toTag: Builder_${{ steps.version-numbers.outputs.prometheus_version }}
+#         fromTag: ${{ steps.last-tags.outputs.builder_tag }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.WISE_PAT }}
+
+    - name: Create Fuel Release Notes
+      id: fuel-notes
+      uses: mikepenz/release-changelog-builder-action@v3.5.0
+      with:
+        owner: WISE-Developers
+        repo: WISE_FBP_Module
+        toTag: Builder_${{ steps.version-numbers.outputs.prometheus_version }}
+#         fromTag: ${{ steps.last-tags.outputs.builder_tag }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.WISE_PAT }}
+
+    - name: Create Grid Release Notes
+      id: grid-notes
+      uses: mikepenz/release-changelog-builder-action@v3.5.0
+      with:
+        owner: WISE-Developers
+        repo: WISE_Grid_Module
+        toTag: Builder_${{ steps.version-numbers.outputs.prometheus_version }}
+#         fromTag: ${{ steps.last-tags.outputs.builder_tag }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.WISE_PAT }}
+
+    - name: Create Weather Release Notes
+      id: weather-notes
+      uses: mikepenz/release-changelog-builder-action@v3.5.0
+      with:
+        owner: WISE-Developers
+        repo: WISE_Weather_Module
+        toTag: Builder_${{ steps.version-numbers.outputs.prometheus_version }}
+#         fromTag: ${{ steps.last-tags.outputs.builder_tag }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.WISE_PAT }}
+
+    - name: Create Scenario Growth Release Notes
+      id: growth-notes
+      uses: mikepenz/release-changelog-builder-action@v3.5.0
+      with:
+        owner: WISE-Developers
+        repo: WISE_Scenario_Growth_Module
+        toTag: Builder_${{ steps.version-numbers.outputs.prometheus_version }}
+#         fromTag: ${{ steps.last-tags.outputs.builder_tag }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.WISE_PAT }}
+
+    - name: Create Project Release Notes
+      id: app-notes
+      uses: mikepenz/release-changelog-builder-action@v3.5.0
+      with:
+        owner: WISE-Developers
+        repo: WISE_Application
+        toTag: Builder_${{ steps.version-numbers.outputs.prometheus_version }}
+#         fromTag: ${{ steps.last-tags.outputs.builder_tag }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.WISE_PAT }}
+
+    - name: Create Builder Release Notes
+      id: builder-notes
+      uses: mikepenz/release-changelog-builder-action@v3.5.0
+      with:
+        owner: WISE-Developers
+        repo: WISE_Builder_Component
+        toTag: Builder_${{ steps.version-numbers.outputs.prometheus_version }}
+#         fromTag: ${{ steps.last-tags.outputs.builder_tag }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.WISE_PAT }}
+
+    - name: Create release
+      uses: softprops/action-gh-release@v1
+      with:
+        name: ${{ steps.version-numbers.outputs.prometheus_version }}
+        body: |
+          # W.I.S.E. Builder
+          
+          ${{ steps.builder-notes.outputs.changelog }}
+          
+          # W.I.S.E. Project Library
+          
+          ${{ steps.app-notes.outputs.changelog }}
+          
+          # W.I.S.E. Scenario Growth Module
+          
+          ${{ steps.growth-notes.outputs.changelog }}
+          
+          # W.I.S.E. Weather Module
+          
+          ${{ steps.weather-notes.outputs.changelog }}
+          
+          # W.I.S.E. Grid Module
+          
+          ${{ steps.grid-notes.outputs.changelog }}
+          
+          # W.I.S.E. FBP Module
+          
+          ${{ steps.fuel-notes.outputs.changelog }}
+          
+          # W.I.S.E. FWI Module
+          
+          ${{ steps.fwi-notes.outputs.changelog }}
+          
+          # W.I.S.E. Java API
+          
+          ${{ steps.api-notes.outputs.changelog }}
+        files: WISE_Builder_Component/*.zip
+        tag_name: refs/tags/Builder_${{ steps.version-numbers.outputs.prometheus_version }}
