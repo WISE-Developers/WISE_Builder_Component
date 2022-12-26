@@ -94,6 +94,7 @@ jobs:
         echo "hss_java_version=$($versions.hss_java)" >> $env:GITHUB_OUTPUT
       
     - name: Update the version
+      run: |
         cd WISE_Communications_Module/WISE_Defaults/java
         mvn versions:set -DnewVersion=${{ steps.version-numbers.outputs.prometheus_version }}
         mvn versions:commit
