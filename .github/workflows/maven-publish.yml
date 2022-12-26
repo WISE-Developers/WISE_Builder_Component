@@ -371,6 +371,7 @@ jobs:
       with:
         owner: WISE-Developers
         repo: WISE_Java_API
+        configuration: WISE_Builder_Component/notes-config.json
         toTag: Builder_${{ steps.version-numbers.outputs.prometheus_version }}
 #         fromTag: ${{ steps.last-tags.outputs.builder_tag }}
       env:
@@ -382,6 +383,7 @@ jobs:
       with:
         owner: WISE-Developers
         repo: WISE_FWI_Module
+        configuration: WISE_Builder_Component/notes-config.json
         toTag: Builder_${{ steps.version-numbers.outputs.prometheus_version }}
 #         fromTag: ${{ steps.last-tags.outputs.builder_tag }}
       env:
@@ -393,6 +395,7 @@ jobs:
       with:
         owner: WISE-Developers
         repo: WISE_FBP_Module
+        configuration: WISE_Builder_Component/notes-config.json
         toTag: Builder_${{ steps.version-numbers.outputs.prometheus_version }}
 #         fromTag: ${{ steps.last-tags.outputs.builder_tag }}
       env:
@@ -404,6 +407,7 @@ jobs:
       with:
         owner: WISE-Developers
         repo: WISE_Grid_Module
+        configuration: WISE_Builder_Component/notes-config.json
         toTag: Builder_${{ steps.version-numbers.outputs.prometheus_version }}
 #         fromTag: ${{ steps.last-tags.outputs.builder_tag }}
       env:
@@ -415,6 +419,7 @@ jobs:
       with:
         owner: WISE-Developers
         repo: WISE_Weather_Module
+        configuration: WISE_Builder_Component/notes-config.json
         toTag: Builder_${{ steps.version-numbers.outputs.prometheus_version }}
 #         fromTag: ${{ steps.last-tags.outputs.builder_tag }}
       env:
@@ -426,6 +431,7 @@ jobs:
       with:
         owner: WISE-Developers
         repo: WISE_Scenario_Growth_Module
+        configuration: WISE_Builder_Component/notes-config.json
         toTag: Builder_${{ steps.version-numbers.outputs.prometheus_version }}
 #         fromTag: ${{ steps.last-tags.outputs.builder_tag }}
       env:
@@ -437,6 +443,7 @@ jobs:
       with:
         owner: WISE-Developers
         repo: WISE_Application
+        configuration: WISE_Builder_Component/notes-config.json
         toTag: Builder_${{ steps.version-numbers.outputs.prometheus_version }}
 #         fromTag: ${{ steps.last-tags.outputs.builder_tag }}
       env:
@@ -448,6 +455,7 @@ jobs:
       with:
         owner: WISE-Developers
         repo: WISE_Builder_Component
+        configuration: WISE_Builder_Component/notes-config.json
         toTag: Builder_${{ steps.version-numbers.outputs.prometheus_version }}
 #         fromTag: ${{ steps.last-tags.outputs.builder_tag }}
       env:
