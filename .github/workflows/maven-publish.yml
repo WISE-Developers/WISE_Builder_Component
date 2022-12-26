@@ -234,36 +234,54 @@ jobs:
     - name: Tag the repositories
       id: last-tags
       run: |
+        cd WISE_Communications_Module
         git config user.name github-actions
         git config user.email github-actions@github.com
-        cd WISE_Communications_Module
         git tag -a Builder_${{ steps.version-numbers.outputs.prometheus_version }} -m "W.I.S.E. Builder release on $(date +'%Y-%m-%d') for commit $(git rev-parse HEAD)"
         cd -
         cd WISE_Java_API
+        git config user.name github-actions
+        git config user.email github-actions@github.com
         git tag -a Builder_${{ steps.version-numbers.outputs.prometheus_version }} -m "W.I.S.E. Builder release on $(date +'%Y-%m-%d') for commit $(git rev-parse HEAD)"
         cd -
         cd WISE_FWI_Module
+        git config user.name github-actions
+        git config user.email github-actions@github.com
         git tag -a Builder_${{ steps.version-numbers.outputs.prometheus_version }} -m "W.I.S.E. Builder release on $(date +'%Y-%m-%d') for commit $(git rev-parse HEAD)"
         cd -
         cd WISE_FBP_Module
+        git config user.name github-actions
+        git config user.email github-actions@github.com
         git tag -a Builder_${{ steps.version-numbers.outputs.prometheus_version }} -m "W.I.S.E. Builder release on $(date +'%Y-%m-%d') for commit $(git rev-parse HEAD)"
         cd -
         cd WISE_Grid_Module
+        git config user.name github-actions
+        git config user.email github-actions@github.com
         git tag -a Builder_${{ steps.version-numbers.outputs.prometheus_version }} -m "W.I.S.E. Builder release on $(date +'%Y-%m-%d') for commit $(git rev-parse HEAD)"
         cd -
         cd WISE_Weather_Module
+        git config user.name github-actions
+        git config user.email github-actions@github.com
         git tag -a Builder_${{ steps.version-numbers.outputs.prometheus_version }} -m "W.I.S.E. Builder release on $(date +'%Y-%m-%d') for commit $(git rev-parse HEAD)"
         cd -
         cd WISE_Scenario_Growth_Module
+        git config user.name github-actions
+        git config user.email github-actions@github.com
         git tag -a Builder_${{ steps.version-numbers.outputs.prometheus_version }} -m "W.I.S.E. Builder release on $(date +'%Y-%m-%d') for commit $(git rev-parse HEAD)"
         cd -
         cd WISE_Application
+        git config user.name github-actions
+        git config user.email github-actions@github.com
         git tag -a Builder_${{ steps.version-numbers.outputs.prometheus_version }} -m "W.I.S.E. Builder release on $(date +'%Y-%m-%d') for commit $(git rev-parse HEAD)"
         cd -
         cd REDapp_Lib
+        git config user.name github-actions
+        git config user.email github-actions@github.com
         git tag -a Builder_${{ steps.version-numbers.outputs.prometheus_version }} -m "W.I.S.E. Builder release on $(date +'%Y-%m-%d') for commit $(git rev-parse HEAD)"
         cd -
         cd WISE_Builder_Component
+        git config user.name github-actions
+        git config user.email github-actions@github.com
         git tag -a Builder_${{ steps.version-numbers.outputs.prometheus_version }} -m "W.I.S.E. Builder release on $(date +'%Y-%m-%d') for commit $(git rev-parse HEAD)"
         
     - name: Push versions changes
