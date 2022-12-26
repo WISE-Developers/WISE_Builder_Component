@@ -37,7 +37,7 @@
     </dependency>
     <dependency>
       <groupId>ca.hss.times</groupId>
-      <artifactId>WTime</artifactId>
+      <artifactId>wtime</artifactId>
       <version>@WTIME_VERSION@</version>
     </dependency>
     <dependency>
