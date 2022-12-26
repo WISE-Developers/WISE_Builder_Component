@@ -106,59 +106,59 @@ jobs:
         cd WISE_FWI_Module/java
         mvn versions:set -DnewVersion=${{ steps.version-numbers.outputs.prometheus_version }}
         mvn versions:use-dep-version -Dincludes=ca.hss:hss-java -DdepVersion=${{ steps.version-numbers.outputs.hss_java_version }} -DforceVersion=true
-        mvn versions:use-dep-version -Dincludes=ca.hss.times:WTime -DdepVersion=${{ steps.version-numbers.outputs.wtime_version }} -DforceVersion=true
+        mvn versions:use-dep-version -Dincludes=ca.hss.times:wtime -DdepVersion=${{ steps.version-numbers.outputs.wtime_version }} -DforceVersion=true
         mvn versions:commit
         cd -
         cd WISE_FBP_Module/java
         mvn versions:set -DnewVersion=${{ steps.version-numbers.outputs.prometheus_version }}
         mvn versions:use-dep-version -Dincludes=ca.hss:hss-java -DdepVersion=${{ steps.version-numbers.outputs.hss_java_version }} -DforceVersion=true
-        mvn versions:use-dep-version -Dincludes=ca.hss.times:WTime -DdepVersion=${{ steps.version-numbers.outputs.wtime_version }} -DforceVersion=true
+        mvn versions:use-dep-version -Dincludes=ca.hss.times:wtime -DdepVersion=${{ steps.version-numbers.outputs.wtime_version }} -DforceVersion=true
         mvn versions:use-dep-version -Dincludes=ca.hss:math -DdepVersion=${{ steps.version-numbers.outputs.hss_math_version }} -DforceVersion=true
-        mvn versions:use-dep-version -Dincludes=ca.wise:FWI -DdepVersion=${{ steps.version-numbers.outputs.prometheus_version }} -DforceVersion=true
+        mvn versions:use-dep-version -Dincludes=ca.wise:fwi -DdepVersion=${{ steps.version-numbers.outputs.prometheus_version }} -DforceVersion=true
         mvn versions:commit
         cd -
         cd WISE_Grid_Module/java
         mvn versions:set -DnewVersion=${{ steps.version-numbers.outputs.prometheus_version }}
-        mvn versions:use-dep-version -Dincludes=ca.hss.times:WTime -DdepVersion=${{ steps.version-numbers.outputs.wtime_version }} -DforceVersion=true
+        mvn versions:use-dep-version -Dincludes=ca.hss.times:wtime -DdepVersion=${{ steps.version-numbers.outputs.wtime_version }} -DforceVersion=true
         mvn versions:use-dep-version -Dincludes=ca.hss:math -DdepVersion=${{ steps.version-numbers.outputs.hss_math_version }} -DforceVersion=true
-        mvn versions:use-dep-version -Dincludes=ca.wise:Fuel -DdepVersion=${{ steps.version-numbers.outputs.prometheus_version }} -DforceVersion=true
+        mvn versions:use-dep-version -Dincludes=ca.wise:fuel -DdepVersion=${{ steps.version-numbers.outputs.prometheus_version }} -DforceVersion=true
         mvn versions:commit
         cd -
         cd WISE_Weather_Module/java
         mvn versions:set -DnewVersion=${{ steps.version-numbers.outputs.prometheus_version }}
         mvn versions:use-dep-version -Dincludes=ca.hss:hss-java -DdepVersion=${{ steps.version-numbers.outputs.hss_java_version }} -DforceVersion=true
-        mvn versions:use-dep-version -Dincludes=ca.hss.times:WTime -DdepVersion=${{ steps.version-numbers.outputs.wtime_version }} -DforceVersion=true
+        mvn versions:use-dep-version -Dincludes=ca.hss.times:wtime -DdepVersion=${{ steps.version-numbers.outputs.wtime_version }} -DforceVersion=true
         mvn versions:use-dep-version -Dincludes=ca.hss:math -DdepVersion=${{ steps.version-numbers.outputs.hss_math_version }} -DforceVersion=true
-        mvn versions:use-dep-version -Dincludes=ca.wise:Grid -DdepVersion=${{ steps.version-numbers.outputs.prometheus_version }} -DforceVersion=true
+        mvn versions:use-dep-version -Dincludes=ca.wise:grid -DdepVersion=${{ steps.version-numbers.outputs.prometheus_version }} -DforceVersion=true
         mvn versions:commit
         cd -
         cd WISE_Scenario_Growth_Module/java
         mvn versions:set -DnewVersion=${{ steps.version-numbers.outputs.prometheus_version }}
-        mvn versions:use-dep-version -Dincludes=ca.hss.times:WTime -DdepVersion=${{ steps.version-numbers.outputs.wtime_version }} -DforceVersion=true
+        mvn versions:use-dep-version -Dincludes=ca.hss.times:wtime -DdepVersion=${{ steps.version-numbers.outputs.wtime_version }} -DforceVersion=true
         mvn versions:use-dep-version -Dincludes=ca.hss:math -DdepVersion=${{ steps.version-numbers.outputs.hss_math_version }} -DforceVersion=true
-        mvn versions:use-dep-version -Dincludes=ca.wise:Grid -DdepVersion=${{ steps.version-numbers.outputs.prometheus_version }} -DforceVersion=true
+        mvn versions:use-dep-version -Dincludes=ca.wise:grid -DdepVersion=${{ steps.version-numbers.outputs.prometheus_version }} -DforceVersion=true
         mvn versions:commit
         cd -
         cd WISE_Application/WISE_Project/java
         mvn versions:set -DnewVersion=${{ steps.version-numbers.outputs.prometheus_version }}
-        mvn versions:use-dep-version -Dincludes=ca.hss.times:WTime -DdepVersion=${{ steps.version-numbers.outputs.wtime_version }} -DforceVersion=true
-        mvn versions:use-dep-version -Dincludes=ca.wise:Grid -DdepVersion=${{ steps.version-numbers.outputs.prometheus_version }} -DforceVersion=true
+        mvn versions:use-dep-version -Dincludes=ca.hss.times:wtime -DdepVersion=${{ steps.version-numbers.outputs.wtime_version }} -DforceVersion=true
+        mvn versions:use-dep-version -Dincludes=ca.wise:grid -DdepVersion=${{ steps.version-numbers.outputs.prometheus_version }} -DforceVersion=true
         mvn versions:use-dep-version -Dincludes=ca.wise:fire_engine -DdepVersion=${{ steps.version-numbers.outputs.prometheus_version }} -DforceVersion=true
-        mvn versions:use-dep-version -Dincludes=ca.wise:Weather -DdepVersion=${{ steps.version-numbers.outputs.prometheus_version }} -DforceVersion=true
+        mvn versions:use-dep-version -Dincludes=ca.wise:weather -DdepVersion=${{ steps.version-numbers.outputs.prometheus_version }} -DforceVersion=true
         mvn versions:commit
         cd -
         cd REDapp_Lib
         mvn versions:set -DnewVersion=${{ steps.version-numbers.outputs.prometheus_version }}
         mvn versions:use-dep-version -Dincludes=ca.hss:hss-java -DdepVersion=${{ steps.version-numbers.outputs.hss_java_version }} -DforceVersion=true
-        mvn versions:use-dep-version -Dincludes=ca.hss.times:WTime -DdepVersion=${{ steps.version-numbers.outputs.wtime_version }} -DforceVersion=true
-        mvn versions:use-dep-version -Dincludes=ca.wise:Fuel -DdepVersion=${{ steps.version-numbers.outputs.prometheus_version }} -DforceVersion=true
-        mvn versions:use-dep-version -Dincludes=ca.wise:Weather -DdepVersion=${{ steps.version-numbers.outputs.prometheus_version }} -DforceVersion=true
+        mvn versions:use-dep-version -Dincludes=ca.hss.times:wtime -DdepVersion=${{ steps.version-numbers.outputs.wtime_version }} -DforceVersion=true
+        mvn versions:use-dep-version -Dincludes=ca.wise:fuel -DdepVersion=${{ steps.version-numbers.outputs.prometheus_version }} -DforceVersion=true
+        mvn versions:use-dep-version -Dincludes=ca.wise:weather -DdepVersion=${{ steps.version-numbers.outputs.prometheus_version }} -DforceVersion=true
         mvn versions:commit
         cd -
         cd WISE_Builder_Component/Builder_Lib
         mvn versions:set -DnewVersion=${{ steps.version-numbers.outputs.prometheus_version }}
         mvn versions:use-dep-version -Dincludes=ca.hss:hss-java -DdepVersion=${{ steps.version-numbers.outputs.hss_java_version }} -DforceVersion=true
-        mvn versions:use-dep-version -Dincludes=ca.hss.times:WTime -DdepVersion=${{ steps.version-numbers.outputs.wtime_version }} -DforceVersion=true
+        mvn versions:use-dep-version -Dincludes=ca.hss.times:wtime -DdepVersion=${{ steps.version-numbers.outputs.wtime_version }} -DforceVersion=true
         mvn versions:use-dep-version -Dincludes=ca.wise:project -DdepVersion=${{ steps.version-numbers.outputs.prometheus_version }} -DforceVersion=true
         mvn versions:use-dep-version -Dincludes=ca.wise:wise-defaults -DdepVersion=${{ steps.version-numbers.outputs.prometheus_version }} -DforceVersion=true
         mvn versions:use-dep-version -Dincludes=ca.wise:javaapi -DdepVersion=${{ steps.version-numbers.outputs.prometheus_version }} -DforceVersion=true
@@ -168,7 +168,7 @@ jobs:
         cd WISE_Builder_Component/Builder
         mvn versions:set -DnewVersion=${{ steps.version-numbers.outputs.prometheus_version }}
         mvn versions:use-dep-version -Dincludes=ca.hss:hss-java -DdepVersion=${{ steps.version-numbers.outputs.hss_java_version }} -DforceVersion=true
-        mvn versions:use-dep-version -Dincludes=ca.hss.times:WTime -DdepVersion=${{ steps.version-numbers.outputs.wtime_version }} -DforceVersion=true
+        mvn versions:use-dep-version -Dincludes=ca.hss.times:wtime -DdepVersion=${{ steps.version-numbers.outputs.wtime_version }} -DforceVersion=true
         mvn versions:use-dep-version -Dincludes=ca.wise:WISE_Builder_Lib -DdepVersion=${{ steps.version-numbers.outputs.prometheus_version }} -DforceVersion=true
         mvn versions:use-dep-version -Dincludes=ca.cwfgm:REDapp_Lib -DdepVersion=${{ steps.version-numbers.outputs.prometheus_version }} -DforceVersion=true
         mvn versions:use-dep-version -Dincludes=ca.wise:wise-defaults -DdepVersion=${{ steps.version-numbers.outputs.prometheus_version }} -DforceVersion=true
