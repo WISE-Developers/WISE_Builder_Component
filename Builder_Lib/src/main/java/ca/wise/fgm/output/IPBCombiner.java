@@ -2878,8 +2878,8 @@ public abstract class IPBCombiner implements IDataCombiner {
 			return ca.wise.weather.proto.WeatherStream.FFMCMethod.LAWSON;
 		case VAN_WAGNER:
 			return ca.wise.weather.proto.WeatherStream.FFMCMethod.VAN_WAGNER;
-		default://TODO add support for hybrid
-			return ca.wise.weather.proto.WeatherStream.FFMCMethod.HYBRID;
+		default:
+			return ca.wise.weather.proto.WeatherStream.FFMCMethod.LAWSON;
 		}
 	}
 	

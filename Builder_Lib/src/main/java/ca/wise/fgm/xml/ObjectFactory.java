@@ -149,46 +149,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link DBH }
-     * 
-     */
-    public DBH createDBH() {
-        return new DBH();
-    }
-
-    /**
-     * Create an instance of {@link DBH.Huang4 }
-     * 
-     */
-    public DBH.Huang4 createDBHHuang4() {
-        return new DBH.Huang4();
-    }
-
-    /**
-     * Create an instance of {@link DBH.Huang3 }
-     * 
-     */
-    public DBH.Huang3 createDBHHuang3() {
-        return new DBH.Huang3();
-    }
-
-    /**
-     * Create an instance of {@link DBH.Huang2 }
-     * 
-     */
-    public DBH.Huang2 createDBHHuang2() {
-        return new DBH.Huang2();
-    }
-
-    /**
-     * Create an instance of {@link DBH.Huang1 }
-     * 
-     */
-    public DBH.Huang1 createDBHHuang1() {
-        return new DBH.Huang1();
-    }
-
-    /**
      * Create an instance of {@link SFC }
      * 
      */
