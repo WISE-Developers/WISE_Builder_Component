@@ -231,8 +231,14 @@ jobs:
         cd WISE_Builder_Component
         Compress-Archive -DestinationPath WISE_Builder-${{ steps.library-build.outputs.user_friendly_version }}.zip -Path Builder/target/WISE_Builder.jar,Builder/target/WISE_Builder_lib
 
-    - name: Tag the repositories
+    - name: Get Last Tags
       id: last-tags
+      run: |
+        cd WISE_Builder_Component
+        LAST_TAG=$(git describe --match "Builder_[0-9\.\-]*" --abbrev=0 --tags)
+        echo "WISE_Builder_Component_tag=$LAST_TAG" >> $GITHUB_OUTPUT
+
+    - name: Tag the repositories
       run: |
         cd WISE_Communications_Module
         git config user.name github-actions
@@ -365,114 +371,21 @@ jobs:
         directory: WISE_Builder_Component
         tags: true
 
-#     - name: Create API Release Notes
-#       id: api-notes
-#       uses: mikepenz/release-changelog-builder-action@v3.5.0
-#       with:
-#         owner: WISE-Developers
-#         repo: WISE_Java_API
-#         path: WISE_Java_API
-#         configuration: ../WISE_Builder_Component/notes-config.json
-#         toTag: Builder_${{ steps.version-numbers.outputs.prometheus_version }}
-#         fromTag: ${{ steps.last-tags.outputs.builder_tag }}
-#       env:
-#         GITHUB_TOKEN: ${{ secrets.WISE_PAT }}
-
-#     - name: Create FWI Release Notes
-#       id: fwi-notes
-#       uses: mikepenz/release-changelog-builder-action@v3.5.0
-#       with:
-#         owner: WISE-Developers
-#         repo: WISE_FWI_Module
-#         path: WISE_FWI_Module
-#         configuration: ../WISE_Builder_Component/notes-config.json
-#         toTag: Builder_${{ steps.version-numbers.outputs.prometheus_version }}
-#         fromTag: ${{ steps.last-tags.outputs.builder_tag }}
-#       env:
-#         GITHUB_TOKEN: ${{ secrets.WISE_PAT }}
-
-#     - name: Create Fuel Release Notes
-#       id: fuel-notes
-#       uses: mikepenz/release-changelog-builder-action@v3.5.0
-#       with:
-#         owner: WISE-Developers
-#         repo: WISE_FBP_Module
-#         path: WISE_FBP_Module
-#         configuration: ../WISE_Builder_Component/notes-config.json
-#         toTag: Builder_${{ steps.version-numbers.outputs.prometheus_version }}
-#         fromTag: ${{ steps.last-tags.outputs.builder_tag }}
-#       env:
-#         GITHUB_TOKEN: ${{ secrets.WISE_PAT }}
-
-#     - name: Create Grid Release Notes
-#       id: grid-notes
-#       uses: mikepenz/release-changelog-builder-action@v3.5.0
-#       with:
-#         owner: WISE-Developers
-#         repo: WISE_Grid_Module
-#         path: WISE_Grid_Module
-#         configuration: ../WISE_Builder_Component/notes-config.json
-#         toTag: Builder_${{ steps.version-numbers.outputs.prometheus_version }}
-#         fromTag: ${{ steps.last-tags.outputs.builder_tag }}
-#       env:
-#         GITHUB_TOKEN: ${{ secrets.WISE_PAT }}
-
-#     - name: Create Weather Release Notes
-#       id: weather-notes
-#       uses: mikepenz/release-changelog-builder-action@v3.5.0
-#       with:
-#         owner: WISE-Developers
-#         repo: WISE_Weather_Module
-#         path: WISE_Weather_Module
-#         configuration: ../WISE_Builder_Component/notes-config.json
-#         toTag: Builder_${{ steps.version-numbers.outputs.prometheus_version }}
-#         fromTag: ${{ steps.last-tags.outputs.builder_tag }}
-#       env:
-#         GITHUB_TOKEN: ${{ secrets.WISE_PAT }}
-
-#     - name: Create Scenario Growth Release Notes
-#       id: growth-notes
-#       uses: mikepenz/release-changelog-builder-action@v3.5.0
-#       with:
-#         owner: WISE-Developers
-#         repo: WISE_Scenario_Growth_Module
-#         path: WISE_Scenario_Growth_Module
-#         configuration: ../WISE_Builder_Component/notes-config.json
-#         toTag: Builder_${{ steps.version-numbers.outputs.prometheus_version }}
-#         fromTag: ${{ steps.last-tags.outputs.builder_tag }}
-#       env:
-#         GITHUB_TOKEN: ${{ secrets.WISE_PAT }}
-
-#     - name: Create Project Release Notes
-#       id: app-notes
-#       uses: mikepenz/release-changelog-builder-action@v3.5.0
-#       with:
-#         owner: WISE-Developers
-#         repo: WISE_Application
-#         path: WISE_Application
-#         configuration: ../WISE_Builder_Component/notes-config.json
-#         toTag: Builder_${{ steps.version-numbers.outputs.prometheus_version }}
-#         fromTag: ${{ steps.last-tags.outputs.builder_tag }}
-#       env:
-#         GITHUB_TOKEN: ${{ secrets.WISE_PAT }}
-
-#     - name: Create Builder Release Notes
-#       id: builder-notes
-#       uses: mikepenz/release-changelog-builder-action@v3.5.0
-#       with:
-#         owner: WISE-Developers
-#         repo: WISE_Builder_Component
-#         path: WISE_Builder_Component
-#         configuration: notes-config.json
-#         toTag: Builder_${{ steps.version-numbers.outputs.prometheus_version }}
-#         fromTag: ${{ steps.last-tags.outputs.builder_tag }}
-#       env:
-#         GITHUB_TOKEN: ${{ secrets.WISE_PAT }}
+    - name: Create Builder Release Notes
+      id: builder-notes
+      uses: mikepenz/release-changelog-builder-action@v3.5.0
+      with:
+        owner: WISE-Developers
+        repo: WISE_Builder_Component
+        toTag: Builder_${{ steps.version-numbers.outputs.prometheus_version }}
+        fromTag: ${{ steps.last-tags.outputs.WISE_Builder_Component_tag }}
+      env:
+        GITHUB_TOKEN: ${{ secrets.WISE_PAT }}
 
     - name: Create release
       uses: softprops/action-gh-release@v1
       with:
         name: ${{ steps.version-numbers.outputs.prometheus_version }}
-        body: Release ${{ steps.version-numbers.output.prometheus_version }}
+        body: ${{ steps.builder-notes.outputs.changelog }}
         files: WISE_Builder_Component/*.zip
         tag_name: refs/tags/Builder_${{ steps.version-numbers.outputs.prometheus_version }}
