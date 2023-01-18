@@ -73,6 +73,7 @@ jobs:
         repository: WISE-Developers/WISE_Builder_Component
         path: WISE_Builder_Component
         token: ${{ secrets.WISE_PAT }}
+        fetch-depth: 0
 
     - name: Set up JDK 8
       uses: actions/setup-java@v3
@@ -350,7 +351,7 @@ jobs:
       id: last-tags
       run: |
         cd WISE_Builder_Component
-        LAST_TAG=$(git describe --match "Builder_[0-9\.\-]*" --abbrev=0 --tags)
+        LAST_TAG=$(git describe --match "Builder_[A-Za-z0-9\.\-]*" --abbrev=0 --tags)
         echo "WISE_Builder_Component_tag=$LAST_TAG" >> $GITHUB_OUTPUT
 
     - name: Tag the repositories
