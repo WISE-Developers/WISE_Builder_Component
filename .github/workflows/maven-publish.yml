@@ -81,7 +81,7 @@ jobs:
     - name: Setup the Maven configuration file
       uses: whelk-io/maven-settings-xml-action@v21
       with:
-        servers: '[{ "id": "github", "username": "spydmobile", "password": "${{ secrets.WISE_PAT }}" }, { "id": "github_hss", "username": "tredpath", "password": "${{ secrets.HSS_PAT }}" }]'
+        servers: '[{ "id": "github", "username": "spydmobile", "password": "${{ secrets.WISE_PAT }}" }, { "id": "github_hss", "username": "spydmobile", "password": "${{ secrets.WISE_PAT }}" }]'
 
     - name: Load values from versions
       id: version-numbers
