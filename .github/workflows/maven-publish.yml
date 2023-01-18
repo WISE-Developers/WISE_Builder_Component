@@ -360,7 +360,6 @@ jobs:
         repository: WISE-Developers/REDapp_Lib
         directory: REDapp_Lib
         tags: true
-        branch: working/wise
         
     - name: Push versions changes
       uses: ad-m/github-push-action@master
