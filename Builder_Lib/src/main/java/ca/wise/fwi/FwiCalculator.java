@@ -24,16 +24,10 @@ public class FwiCalculator {
 		if (m == Message.HOURLY_FFMC_VAN_WAGNER) {
 			return true;
 		}
-		else if (m == Message.HOURLY_FFMC_EQUILIBRIUM) {
-			return true;
-		}
 		else if (m == Message.HOURLY_FFMC_LAWSON) {
 			return true;
 		}
 		else if (m == Message.HOURLY_FFMC_VAN_WAGNER_PREVIOUS) {
-			return true;
-		}
-		else if (m == Message.HOURLY_FFMC_EQUILIBRIUM_PREVIOUS) {
 			return true;
 		}
 		else if (m == Message.HOURLY_FFMC_LAWSON_CONTIGUOUS) {
@@ -73,14 +67,10 @@ public class FwiCalculator {
 		switch (m) {
 		case HOURLY_FFMC_VAN_WAGNER:
 			return hourlyFFMCVanWagner(data);
-		case HOURLY_FFMC_EQUILIBRIUM:
-			return hourlyFFMCEquilibrium(data);
 		case HOURLY_FFMC_LAWSON:
 			return hourlyFFMCLawson(data);
 		case HOURLY_FFMC_VAN_WAGNER_PREVIOUS:
 			return hourlyFFMCVanWagnerPrevious(data);
-		case HOURLY_FFMC_EQUILIBRIUM_PREVIOUS:
-			return hourlyFFMCEquilibriumPrevious(data);
 		case HOURLY_FFMC_LAWSON_CONTIGUOUS:
 			return hourlyFFMCLawsonContiguous(data);
 		case DAILY_FFMC_VAN_WAGNER:
@@ -124,25 +114,6 @@ public class FwiCalculator {
 		return -9999.0;
 	}
 
-	private double hourlyFFMCEquilibrium(String data) {
-		String list[] = data.split("\\|");
-		double retval = -9999.0;
-		if (list.length != 6)
-			return -9999.0;
-		try {
-			double inFFMC = Double.parseDouble(list[0]);
-			double rain = Double.parseDouble(list[1]);
-			double temperature = Double.parseDouble(list[2]);
-			double rh = Double.parseDouble(list[3]);
-			double ws = Double.parseDouble(list[4]);
-			Duration dur = CreateDuration(list[5]);
-			retval = Fwi.hourlyFFMCEquilibrium(inFFMC, rain, temperature, rh, ws, DurationToSeconds(dur));
-		}
-		catch (NumberFormatException ex) {
-		}
-		return retval;
-	}
-
 	public double hourlyFFMCLawson(String data) {
 		String list[] = data.split("\\|");
 		double retval = -9999.0;
@@ -172,24 +143,6 @@ public class FwiCalculator {
 			double rh = Double.parseDouble(list[3]);
 			double ws = Double.parseDouble(list[4]);
 			retval = Fwi.hourlyFFMCVanWagnerPrevious(currFFMC, rain, temperature, rh, ws);
-		}
-		catch (NumberFormatException ex) {
-		}
-		return retval;
-	}
-
-	public double hourlyFFMCEquilibriumPrevious(String data) {
-		String list[] = data.split("\\|");
-		double retval = -9999.0;
-		if (list.length != 5)
-			return retval;
-		try {
-			double currFFMC = Double.parseDouble(list[0]);
-			double rain = Double.parseDouble(list[1]);
-			double temperature = Double.parseDouble(list[2]);
-			double rh = Double.parseDouble(list[3]);
-			double ws = Double.parseDouble(list[4]);
-			retval = Fwi.hourlyFFMCEquilibriumPrevious(currFFMC, rain, temperature, rh, ws);
 		}
 		catch (NumberFormatException ex) {
 		}
