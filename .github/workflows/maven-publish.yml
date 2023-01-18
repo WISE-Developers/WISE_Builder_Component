@@ -65,7 +65,6 @@ jobs:
         repository: WISE-Developers/REDapp_Lib
         path: REDapp_Lib
         token: ${{ secrets.WISE_PAT }}
-        ref: working/wise
     - uses: actions/checkout@v3
       with:
         repository: WISE-Developers/WISE_Builder_Component
