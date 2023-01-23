@@ -26,6 +26,7 @@ import ca.wise.api.input.FuelOption;
 import ca.wise.api.input.FuelPatch;
 import ca.wise.api.input.FuelPatchType;
 import ca.wise.api.input.GridFileType;
+import ca.wise.api.input.GustingOptions;
 import ca.wise.api.input.HFFMCMethod;
 import ca.wise.api.input.Ignition;
 import ca.wise.api.input.IgnitionReference;
@@ -1392,6 +1393,33 @@ public class SocketDecoder {
 					index++;
 				}
 			}
+            else if (nextVal.equals(PHP_TYPE.GUSTING_OPTIONS.val)) {
+                String list[] = data.split("\\|");
+                if (list.length == 4) {
+                    try {
+                        GustingOptions.GustingOptionsBuilder builder = GustingOptions.builder();
+                        GustingOptions.Gusting gusting = GustingOptions.Gusting.fromInt(Integer.parseInt(list[0]));
+                        builder.gusting(gusting);
+                        if (gusting == GustingOptions.Gusting.TIME_DERIVED_GUSTING || gusting == GustingOptions.Gusting.ROS_DERIVED_GUSTING) {
+                            if (!Strings.isNullOrEmpty(list[1]) && !list[1].equalsIgnoreCase("null"))
+                                builder.gustsPerHour(Integer.parseInt(list[1]));
+                            if (!Strings.isNullOrEmpty(list[2]) && !list[2].equalsIgnoreCase("null"))
+                                builder.percentGusting(Double.parseDouble(list[2]));
+                            if (!Strings.isNullOrEmpty(list[3]) && !list[3].equalsIgnoreCase("null"))
+                                builder.gustBias(GustingOptions.GustBias.fromInt(Integer.parseInt(list[3])));
+                        }
+                        else if (gusting == GustingOptions.Gusting.AVERAGE_GUSTING) {
+                            if (!Strings.isNullOrEmpty(list[2]) && !list[2].equalsIgnoreCase("null"))
+                                builder.percentGusting(Double.parseDouble(list[2]));
+                        }
+                        
+                        currentScen.setGustingOptions(builder.build());
+                    }
+                    catch (NumberFormatException e) {
+                        return "Invalid gusting options.";
+                    }
+                }
+            }
 			else {
 				String temp = nextVal;
 				nextVal = null;
