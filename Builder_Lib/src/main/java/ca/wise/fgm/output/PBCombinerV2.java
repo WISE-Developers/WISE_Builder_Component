@@ -1150,6 +1150,17 @@ public class PBCombinerV2 extends IPBCombiner {
 //                    .setValue(input.getStopModellingOptions().getArea().getThreshold());
 //            }
 		}
+		
+		if (input.getGustingOptions() != null) {
+		    CwfgmScenario.GustingOptions.Builder options = builder.getGustingOptionsBuilder();
+		    options.setGustingValue(input.getGustingOptions().getGusting().value);
+		    if (input.getGustingOptions().getGustsPerHour() != null)
+		        options.setGustsPerHour(input.getGustingOptions().getGustsPerHour());
+		    if (input.getGustingOptions().getPercentGusting() != null)
+		        options.setPercentGusting(input.getGustingOptions().getPercentGusting());
+		    if (input.getGustingOptions().getGustBias() != null)
+		        options.setGustBiasValue(input.getGustingOptions().getGustBias().value);
+		}
 	}
 
 	/**
