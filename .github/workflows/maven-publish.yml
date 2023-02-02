@@ -348,7 +348,7 @@ jobs:
       id: last-tags
       run: |
         cd WISE_Builder_Component
-        LAST_TAG=$(git describe --match "Builder_[A-Za-z0-9\.\-]*" --abbrev=0 --tags)
+        LAST_TAG=$(git describe --abbrev=0 --tags)
         echo "WISE_Builder_Component_tag=$LAST_TAG" >> $GITHUB_OUTPUT
 
     - name: Tag the repositories
@@ -401,7 +401,7 @@ jobs:
         cd WISE_Builder_Component
         git config user.name github-actions
         git config user.email github-actions@github.com
-        git tag -a Builder_${{ steps.version-numbers.outputs.prometheus_version }} -m "W.I.S.E. Builder release on $(date +'%Y-%m-%d') for commit $(git rev-parse HEAD)"
+        git tag -a ${{ steps.version-numbers.outputs.prometheus_version }} -m "W.I.S.E. Builder release on $(date +'%Y-%m-%d') for commit $(git rev-parse HEAD)"
         
     - name: Push versions changes
       uses: ad-m/github-push-action@master
@@ -489,7 +489,7 @@ jobs:
       with:
         owner: WISE-Developers
         repo: WISE_Builder_Component
-        toTag: Builder_${{ steps.version-numbers.outputs.prometheus_version }}
+        toTag: ${{ steps.version-numbers.outputs.prometheus_version }}
         fromTag: ${{ steps.last-tags.outputs.WISE_Builder_Component_tag }}
       env:
         GITHUB_TOKEN: ${{ secrets.WISE_PAT }}
@@ -500,4 +500,4 @@ jobs:
         name: ${{ steps.version-numbers.outputs.prometheus_version }}
         body: ${{ steps.builder-notes.outputs.changelog }}
         files: WISE_Builder_Component/*.zip
-        tag_name: refs/tags/Builder_${{ steps.version-numbers.outputs.prometheus_version }}
+        tag_name: refs/tags/${{ steps.version-numbers.outputs.prometheus_version }}
