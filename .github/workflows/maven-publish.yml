@@ -20,7 +20,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
       with:
-        repository: WISE-Developers/versions
+        repository: WISE-Developers/WISE_Versions
         path: versions
         token: ${{ secrets.WISE_PAT }}
     - uses: actions/checkout@v3
@@ -137,8 +137,8 @@ jobs:
       shell: pwsh
       run: |
         $versions = ConvertFrom-StringData (Get-Content versions/versions.properties -raw)
-        echo "Updating to version $($versions.prometheus)"
-        echo "prometheus_version=$($versions.prometheus)" >> $env:GITHUB_OUTPUT
+        echo "Updating to version $($versions.wise)"
+        echo "prometheus_version=$($versions.wise)" >> $env:GITHUB_OUTPUT
         echo "hss_math_version=$($versions.hss_math)" >> $env:GITHUB_OUTPUT
         echo "wtime_version=$($versions.wtime)" >> $env:GITHUB_OUTPUT
         echo "hss_java_version=$($versions.hss_java)" >> $env:GITHUB_OUTPUT
