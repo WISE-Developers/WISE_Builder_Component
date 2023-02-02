@@ -333,9 +333,6 @@ jobs:
         cd -
         cd WISE_Builder_Component/Builder
         mvn --batch-mode package
-        APPLICATION_VERSION=$(mvn -q -Dexec.executable=echo -Dexec.args='${project.version}' --non-recursive exec:exec | cut -d "." -f2-)
-        APPLICATION_VERSION=$(echo "${APPLICATION_VERSION/-/.}")
-        echo "user_friendly_version=$APPLICATION_VERSION" >> $GITHUB_OUTPUT
         CURRENT_DATE=$(date +'%Y%m%d')
         echo "build_date=$CURRENT_DATE" >> $GITHUB_OUTPUT
       env:
@@ -345,7 +342,7 @@ jobs:
       shell: pwsh
       run: |
         cd WISE_Builder_Component
-        Compress-Archive -DestinationPath WISE_Builder-${{ steps.library-build.outputs.user_friendly_version }}.zip -Path Builder/target/WISE_Builder.jar,Builder/target/WISE_Builder_lib
+        Compress-Archive -DestinationPath WISE_Builder-${{ steps.version-numbers.outputs.prometheus_version }}.zip -Path Builder/target/WISE_Builder.jar,Builder/target/WISE_Builder_lib
 
     - name: Get Last Tags
       id: last-tags
