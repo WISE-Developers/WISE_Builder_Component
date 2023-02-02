@@ -179,7 +179,8 @@ public class SocketDecoder {
 		FGM_SETTINGS("fgm_settings"),
 		UNIT_SETTINGS("export_units"),
 		SCENARIO_SEASONAL("scenario_seasonal"),
-		STOP_MODELLING("stop_modelling");
+		STOP_MODELLING("stop_modelling"),
+		GUSTING_OPTIONS("gusting_options");
 		
 		private String val;
 		private static List<String> valList = null;
