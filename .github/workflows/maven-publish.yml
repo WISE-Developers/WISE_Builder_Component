@@ -91,7 +91,7 @@ jobs:
         tarBall: false
         zipBall: false
         out-file-path: "proto/HSS_Math"
-        token: ${{ secrets.HSS_PAT }}
+        token: ${{ secrets.WISE_PAT }}
 
     - name: Download Geography protobuf files
       uses: robinraju/release-downloader@v1.7
@@ -102,7 +102,7 @@ jobs:
         tarBall: false
         zipBall: false
         out-file-path: "proto/HSS_Geography"
-        token: ${{ secrets.HSS_PAT }}
+        token: ${{ secrets.WISE_PAT }}
 
     - name: Download WTime protobuf files
       uses: robinraju/release-downloader@v1.7
@@ -113,7 +113,7 @@ jobs:
         tarBall: false
         zipBall: false
         out-file-path: "proto/WTime"
-        token: ${{ secrets.HSS_PAT }}
+        token: ${{ secrets.WISE_PAT }}
         
     - name: Unarchive downloaded protobuf files
       shell: pwsh
