@@ -141,9 +141,8 @@ jobs:
       shell: pwsh
       run: |
         $versions = ConvertFrom-StringData (Get-Content versions/versions.properties -raw)
-        echo "::set-output name=date::$(date +'%Y-%m-%d')"
-        echo "Updating to version $($versions.wise)"
-        echo "wise_top_version=$($versions.wise)" >> $env:GITHUB_OUTPUT
+        echo "Updating to version $($versions.wise)-dev-$(date +'%Y-%m-%d').$(date +'%H.%M')"
+        echo "wise_top_version=$($versions.wise)-dev-$(date +'%Y-%m-%d').$(date +'%H.%M')" >> $env:GITHUB_OUTPUT
         echo "hss_math_version=$($versions.hss_math)" >> $env:GITHUB_OUTPUT
         echo "wtime_version=$($versions.wtime)" >> $env:GITHUB_OUTPUT
         echo "hss_java_version=$($versions.hss_java)" >> $env:GITHUB_OUTPUT
