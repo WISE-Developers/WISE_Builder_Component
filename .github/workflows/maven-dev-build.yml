@@ -229,124 +229,124 @@ jobs:
     #     mvn versions:commit
     #     cd -
     
-    # - name: Download protobuf
-    #   shell: pwsh
-    #   run: |
-    #     Invoke-WebRequest "https://heartlandsoftwaresolutions.sharepoint.com/:u:/g/HSS_Releases/EUZ4knsEFP5FjNHHWR5dHc0BofAFyEPdLKRvzAgaTuDi1w?e=XW0Muc&download=1" -OutFile protobuf.zip
-    #     Expand-Archive protobuf.zip -DestinationPath protobuf
-    #     mv protobuf/protobuf-3.${{ env.PROTO_VERSION }}/* protobuf
+    - name: Download protobuf
+      shell: pwsh
+      run: |
+        Invoke-WebRequest "https://heartlandsoftwaresolutions.sharepoint.com/:u:/g/HSS_Releases/EUZ4knsEFP5FjNHHWR5dHc0BofAFyEPdLKRvzAgaTuDi1w?e=XW0Muc&download=1" -OutFile protobuf.zip
+        Expand-Archive protobuf.zip -DestinationPath protobuf
+        mv protobuf/protobuf-3.${{ env.PROTO_VERSION }}/* protobuf
         
-    # - name: Build protobuf
-    #   shell: pwsh
-    #   run: |
-    #     cd protobuf
-    #     cd cmake
-    #     mkdir build
-    #     cd build
-    #     cmake ../ -DCMAKE_BUILD_TYPE=Release -DCMAKE_POSITION_INDEPENDENT_CODE=ON
-    #     cmake --build . --target protoc
+    - name: Build protobuf
+      shell: pwsh
+      run: |
+        cd protobuf
+        cd cmake
+        mkdir build
+        cd build
+        cmake ../ -DCMAKE_BUILD_TYPE=Release -DCMAKE_POSITION_INDEPENDENT_CODE=ON
+        cmake --build . --target protoc
         
-    # - name: Build Proto definition files
-    #   shell: pwsh
-    #   run: |
-    #     cd WISE_FBP_Module
-    #     ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto accAlpha.proto
-    #     ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto ccwfgmFuel.proto
-    #     ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto cfb.proto
-    #     ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto dbh.proto
-    #     ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto flame.proto
-    #     ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto fmc.proto
-    #     ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto fuelNames.proto
-    #     ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto isf.proto
-    #     ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto lb.proto
-    #     ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto rsi.proto
-    #     ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto sfc.proto
-    #     ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto spreadParms.proto
-    #     ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto tfc.proto
-    #     cd ../WISE_Grid_Module
-    #     ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto cwfgmFilter.proto
-    #     ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto cwfgmFuelMap.proto
-    #     ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto cwfgmGrid.proto
-    #     ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto wcsData.proto
-    #     cd ../WISE_Weather_Module
-    #     ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto cwfgmWeatherStation.proto
-    #     ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto cwfgmWeatherStream.proto
-    #     ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto dailyConditions.proto
-    #     ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto weatherGridFilter.proto
-    #     ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto weatherStream.proto
-    #     ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto windGrid.proto
-    #     cd ../WISE_Scenario_Growth_Module
-    #     ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto cwfgmFire.proto
-    #     ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto cwfgmScenario.proto
-    #     cd ../WISE_Application/WISE_Project
-    #     ../../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../../protobuf/src --proto_path ../../proto assetCollection.proto
-    #     ../../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../../protobuf/src --proto_path ../../proto cwfgmProject.proto
-    #     ../../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../../protobuf/src --proto_path ../../proto fuelCollection.proto
-    #     ../../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../../protobuf/src --proto_path ../../proto gridCollection.proto
-    #     ../../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../../protobuf/src --proto_path ../../proto projectGridFilter.proto
-    #     ../../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../../protobuf/src --proto_path ../../proto projectIgnition.proto
-    #     ../../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../../protobuf/src --proto_path ../../proto projectScenario.proto
-    #     ../../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../../protobuf/src --proto_path ../../proto projectWindGrid.proto
-    #     ../../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../../protobuf/src --proto_path ../../proto staticPoints.proto
-    #     ../../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../../protobuf/src --proto_path ../../proto summary.proto
-    #     ../../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../../protobuf/src --proto_path ../../proto vectorCollection.proto
-    #     ../../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../../protobuf/src --proto_path ../../proto viewStorage.proto
-    #     ../../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../../protobuf/src --proto_path ../../proto weatherStation.proto
-    #     cd ../../WISE_Communications_Module/WISE_Defaults
-    #     ../../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../../protobuf/src --proto_path proto wise_config.proto
-    #     ../../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../../protobuf/src --proto_path proto wise_defaults.proto
-    #     ../../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../../protobuf/src --proto_path proto manager_settings.proto
+    - name: Build Proto definition files
+      shell: pwsh
+      run: |
+        cd WISE_FBP_Module
+        ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto accAlpha.proto
+        ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto ccwfgmFuel.proto
+        ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto cfb.proto
+        ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto dbh.proto
+        ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto flame.proto
+        ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto fmc.proto
+        ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto fuelNames.proto
+        ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto isf.proto
+        ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto lb.proto
+        ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto rsi.proto
+        ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto sfc.proto
+        ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto spreadParms.proto
+        ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto tfc.proto
+        cd ../WISE_Grid_Module
+        ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto cwfgmFilter.proto
+        ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto cwfgmFuelMap.proto
+        ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto cwfgmGrid.proto
+        ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto wcsData.proto
+        cd ../WISE_Weather_Module
+        ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto cwfgmWeatherStation.proto
+        ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto cwfgmWeatherStream.proto
+        ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto dailyConditions.proto
+        ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto weatherGridFilter.proto
+        ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto weatherStream.proto
+        ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto windGrid.proto
+        cd ../WISE_Scenario_Growth_Module
+        ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto cwfgmFire.proto
+        ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto cwfgmScenario.proto
+        cd ../WISE_Application/WISE_Project
+        ../../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../../protobuf/src --proto_path ../../proto assetCollection.proto
+        ../../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../../protobuf/src --proto_path ../../proto cwfgmProject.proto
+        ../../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../../protobuf/src --proto_path ../../proto fuelCollection.proto
+        ../../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../../protobuf/src --proto_path ../../proto gridCollection.proto
+        ../../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../../protobuf/src --proto_path ../../proto projectGridFilter.proto
+        ../../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../../protobuf/src --proto_path ../../proto projectIgnition.proto
+        ../../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../../protobuf/src --proto_path ../../proto projectScenario.proto
+        ../../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../../protobuf/src --proto_path ../../proto projectWindGrid.proto
+        ../../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../../protobuf/src --proto_path ../../proto staticPoints.proto
+        ../../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../../protobuf/src --proto_path ../../proto summary.proto
+        ../../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../../protobuf/src --proto_path ../../proto vectorCollection.proto
+        ../../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../../protobuf/src --proto_path ../../proto viewStorage.proto
+        ../../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../../protobuf/src --proto_path ../../proto weatherStation.proto
+        cd ../../WISE_Communications_Module/WISE_Defaults
+        ../../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../../protobuf/src --proto_path proto wise_config.proto
+        ../../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../../protobuf/src --proto_path proto wise_defaults.proto
+        ../../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../../protobuf/src --proto_path proto manager_settings.proto
 
-    # - name: Build the libraries
-    #   id: library-build
-    #   run: |
-    #     cd WISE_Communications_Module/WISE_Defaults/java
-    #     mvn --batch-mode install
-    #     cd -
-    #     cd WISE_Java_API
-    #     mvn --batch-mode install
-    #     cd -
-    #     cd WISE_FWI_Module/java
-    #     mvn --batch-mode install
-    #     mvn --batch-mode deploy
-    #     cd -
-    #     cd WISE_FBP_Module/java
-    #     mvn --batch-mode install
-    #     mvn --batch-mode deploy
-    #     cd -
-    #     cd WISE_Grid_Module/java
-    #     mvn --batch-mode install
-    #     mvn --batch-mode deploy
-    #     cd -
-    #     cd WISE_Weather_Module/java
-    #     mvn --batch-mode install
-    #     mvn --batch-mode deploy
-    #     cd -
-    #     cd WISE_Scenario_Growth_Module/java
-    #     mvn --batch-mode install
-    #     mvn --batch-mode deploy
-    #     cd -
-    #     cd WISE_Application/WISE_Project/java
-    #     mvn --batch-mode install
-    #     cd -
-    #     cd REDapp_Lib
-    #     mvn --batch-mode install
-    #     cd -
-    #     cd WISE_Builder_Component/Builder_Lib
-    #     mvn --batch-mode install
-    #     cd -
-    #     cd WISE_Builder_Component/Builder
-    #     mvn --batch-mode package
-    #     CURRENT_DATE=$(date +'%Y%m%d')
-    #     echo "build_date=$CURRENT_DATE" >> $GITHUB_OUTPUT
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.WISE_PAT }}
+    - name: Build the libraries
+      id: library-build
+      run: |
+        cd WISE_Communications_Module/WISE_Defaults/java
+        mvn --batch-mode install
+        cd -
+        cd WISE_Java_API
+        mvn --batch-mode install
+        cd -
+        cd WISE_FWI_Module/java
+        mvn --batch-mode install
+        # mvn --batch-mode deploy
+        cd -
+        cd WISE_FBP_Module/java
+        mvn --batch-mode install
+        # mvn --batch-mode deploy
+        cd -
+        cd WISE_Grid_Module/java
+        mvn --batch-mode install
+        # mvn --batch-mode deploy
+        cd -
+        cd WISE_Weather_Module/java
+        mvn --batch-mode install
+        # mvn --batch-mode deploy
+        cd -
+        cd WISE_Scenario_Growth_Module/java
+        mvn --batch-mode install
+        # mvn --batch-mode deploy
+        cd -
+        cd WISE_Application/WISE_Project/java
+        mvn --batch-mode install
+        cd -
+        cd REDapp_Lib
+        mvn --batch-mode install
+        cd -
+        cd WISE_Builder_Component/Builder_Lib
+        mvn --batch-mode install
+        cd -
+        cd WISE_Builder_Component/Builder
+        mvn --batch-mode package
+        CURRENT_DATE=$(date +'%Y%m%d')
+        echo "build_date=$CURRENT_DATE" >> $GITHUB_OUTPUT
+      env:
+        GITHUB_TOKEN: ${{ secrets.WISE_PAT }}
     
-    # - name: Archive generated files
-    #   shell: pwsh
-    #   run: |
-    #     cd WISE_Builder_Component
-    #     Compress-Archive -DestinationPath WISE_Builder-${{ steps.version-numbers.outputs.wise_top_version }}.zip -Path Builder/target/WISE_Builder.jar,Builder/target/WISE_Builder_lib
+    - name: Archive generated files
+      shell: pwsh
+      run: |
+        cd WISE_Builder_Component
+        Compress-Archive -DestinationPath WISE_Builder-${{ steps.version-numbers.outputs.wise_top_version }}.zip -Path Builder/target/WISE_Builder.jar,Builder/target/WISE_Builder_lib
 
     # - name: Get Last Tags
     #   id: last-tags
@@ -498,10 +498,10 @@ jobs:
     #   env:
     #     GITHUB_TOKEN: ${{ secrets.WISE_PAT }}
 
-    # - name: Create release
-    #   uses: softprops/action-gh-release@v1
-    #   with:
-    #     name: ${{ steps.version-numbers.outputs.wise_top_version }}
-    #     body: ${{ steps.builder-notes.outputs.changelog }}
-    #     files: WISE_Builder_Component/*.zip
-    #     tag_name: refs/tags/${{ steps.version-numbers.outputs.wise_top_version }}
+    - name: Create release
+      uses: softprops/action-gh-release@v1
+      with:
+        name: ${{ steps.version-numbers.outputs.wise_top_version }}
+        body: ${{ steps.builder-notes.outputs.changelog }}
+        files: WISE_Builder_Component/*.zip
+        tag_name: refs/tags/${{ steps.version-numbers.outputs.wise_top_version }}
