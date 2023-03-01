@@ -139,8 +139,7 @@ jobs:
     - name: Load values from versions
       id: version-numbers
       shell: pwsh
-      run: |
-        Set-TimeZone -Name 'Mountain Standard Time'
+      run: |       
         $versions = ConvertFrom-StringData (Get-Content versions/versions.properties -raw)
         echo "Updating to version $($versions.wise)-dev-$(date +'%Y-%m-%d')_$(date +'%H.%M')"
         echo "wise_top_version=$($versions.wise)-dev-$(date +'%Y-%m-%d')_$(date +'%H.%M')" >> $env:GITHUB_OUTPUT
