@@ -502,6 +502,7 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         name: ${{ steps.version-numbers.outputs.wise_top_version }}
+        prerelease: true
         body: ${{ steps.builder-notes.outputs.changelog }}
         files: WISE_Builder_Component/*.zip
         tag_name: refs/tags/${{ steps.version-numbers.outputs.wise_top_version }}
