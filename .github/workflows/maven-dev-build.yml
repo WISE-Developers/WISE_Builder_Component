@@ -308,23 +308,23 @@ jobs:
         cd -
         cd WISE_FWI_Module/java
         mvn --batch-mode install
-        # mvn --batch-mode deploy
+        mvn --batch-mode deploy
         cd -
         cd WISE_FBP_Module/java
         mvn --batch-mode install
-        # mvn --batch-mode deploy
+        mvn --batch-mode deploy
         cd -
         cd WISE_Grid_Module/java
         mvn --batch-mode install
-        # mvn --batch-mode deploy
+        mvn --batch-mode deploy
         cd -
         cd WISE_Weather_Module/java
         mvn --batch-mode install
-        # mvn --batch-mode deploy
+        mvn --batch-mode deploy
         cd -
         cd WISE_Scenario_Growth_Module/java
         mvn --batch-mode install
-        # mvn --batch-mode deploy
+        mvn --batch-mode deploy
         cd -
         cd WISE_Application/WISE_Project/java
         mvn --batch-mode install
