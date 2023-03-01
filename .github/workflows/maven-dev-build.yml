@@ -1,0 +1,508 @@
+# This workflow will build a package using Maven and then publish it to GitHub packages when a release is created
+# For more information see: https://github.com/actions/setup-java/blob/main/docs/advanced-usage.md#apache-maven-with-a-settings-path
+
+# improvements:
+# replace the `prometheus_version` with a variable named `wise_top_version`
+# remove all the tokens not needed for public repos
+
+name: Maven Developer
+
+on:
+  workflow_dispatch
+
+env:
+  PROTO_VERSION: 21.10
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      packages: read
+
+    steps:
+    - uses: actions/checkout@v3.3.0
+      with:
+        repository: WISE-Developers/WISE_Versions
+        ref: developer
+        path: versions
+    - uses: actions/checkout@v3.3.0
+      with:
+        repository: WISE-Developers/WISE_Communications_Module
+        ref: developer
+        path: WISE_Communications_Module
+    - uses: actions/checkout@v3.3.0
+      with:
+        repository: WISE-Developers/WISE_Java_API
+        ref: developer
+        path: WISE_Java_API
+    - uses: actions/checkout@v3.3.0
+      with:
+        repository: WISE-Developers/WISE_FWI_Module
+        ref: developer
+        path: WISE_FWI_Module
+    - uses: actions/checkout@v3.3.0
+      with:
+        repository: WISE-Developers/WISE_FBP_Module
+        ref: developer
+        path: WISE_FBP_Module
+    - uses: actions/checkout@v3.3.0
+      with:
+        repository: WISE-Developers/WISE_Grid_Module
+        ref: developer
+        path: WISE_Grid_Module
+    - uses: actions/checkout@v3.3.0
+      with:
+        repository: WISE-Developers/WISE_Weather_Module
+        ref: developer
+        path: WISE_Weather_Module
+    - uses: actions/checkout@v3.3.0
+      with:
+        repository: WISE-Developers/WISE_Scenario_Growth_Module
+        ref: developer
+        path: WISE_Scenario_Growth_Module
+    - uses: actions/checkout@v3.3.0
+      with:
+        repository: WISE-Developers/WISE_Application
+        ref: developer
+        path: WISE_Application
+    - uses: actions/checkout@v3.3.0
+      with:
+        repository: WISE-Developers/REDapp_Lib
+        ref: developer
+        path: REDapp_Lib
+    - uses: actions/checkout@v3.3.0
+      with:
+        repository: WISE-Developers/WISE_Builder_Component
+        ref: developer
+        path: WISE_Builder_Component
+        fetch-depth: 0
+
+    - name: Set up JDK 8
+      uses: actions/setup-java@v3
+      with:
+        java-version: '8'
+        distribution: 'temurin'
+        server-id: github
+    
+    - name: Download Math protobuf files
+      uses: robinraju/release-downloader@v1.7
+      with:
+        repository: "HeartlandSoftware/HSS_Math_2"
+        latest: true
+        fileName: "proto_def.zip"
+        tarBall: false
+        zipBall: false
+        out-file-path: "proto/HSS_Math"
+        token: ${{ secrets.WISE_PAT }}
+
+    - name: Download Geography protobuf files
+      uses: robinraju/release-downloader@v1.7
+      with:
+        repository: "HeartlandSoftware/HSS_Geography_2"
+        latest: true
+        fileName: "proto_def.zip"
+        tarBall: false
+        zipBall: false
+        out-file-path: "proto/HSS_Geography"
+        token: ${{ secrets.WISE_PAT }}
+
+    - name: Download WTime protobuf files
+      uses: robinraju/release-downloader@v1.7
+      with:
+        repository: "HeartlandSoftware/WTime"
+        latest: true
+        fileName: "proto_def.zip"
+        tarBall: false
+        zipBall: false
+        out-file-path: "proto/WTime"
+        token: ${{ secrets.WISE_PAT }}
+        
+    - name: Unarchive downloaded protobuf files
+      shell: pwsh
+      run: |
+        Expand-Archive proto/HSS_Math/proto_def.zip -DestinationPath . -Force
+        Expand-Archive proto/HSS_Geography/proto_def.zip -DestinationPath . -Force
+        Expand-Archive proto/WTime/proto_def.zip -DestinationPath . -Force
+        Copy-Item WISE_FBP_Module/proto/*.proto -Destination proto -Force
+        Copy-Item WISE_Grid_Module/proto/*.proto -Destination proto -Force
+        Copy-Item WISE_Weather_Module/proto/*.proto -Destination proto -Force
+        Copy-Item WISE_Scenario_Growth_Module/proto/*.proto -Destination proto -Force
+        Copy-Item WISE_Application/WISE_Project/proto/*.proto -Destination proto -Force
+
+    - name: Setup the Maven configuration file
+      uses: whelk-io/maven-settings-xml-action@v21
+      with:
+        servers: '[{ "id": "github", "username": "spydmobile", "password": "${{ secrets.WISE_PAT }}" }, { "id": "github_hss", "username": "spydmobile", "password": "${{ secrets.WISE_PAT }}" }]'
+
+    - name: Load values from versions
+      id: version-numbers
+      shell: pwsh
+      run: |
+        $versions = ConvertFrom-StringData (Get-Content versions/versions.properties -raw)
+        echo "::set-output name=date::$(date +'%Y-%m-%d')"
+        echo "Updating to version $($versions.wise)"
+        echo "wise_top_version=$($versions.wise)" >> $env:GITHUB_OUTPUT
+        echo "hss_math_version=$($versions.hss_math)" >> $env:GITHUB_OUTPUT
+        echo "wtime_version=$($versions.wtime)" >> $env:GITHUB_OUTPUT
+        echo "hss_java_version=$($versions.hss_java)" >> $env:GITHUB_OUTPUT
+      
+    # - name: Update the version
+    #   run: |
+    #     cd WISE_Communications_Module/WISE_Defaults/java
+    #     mvn versions:set -DnewVersion=${{ steps.version-numbers.outputs.wise_top_version }}
+    #     mvn versions:commit
+    #     cd -
+    #     cd WISE_Java_API
+    #     mvn versions:set -DnewVersion=${{ steps.version-numbers.outputs.wise_top_version }}
+    #     mvn versions:commit
+    #     cd -
+    #     cd WISE_FWI_Module/java
+    #     mvn versions:set -DnewVersion=${{ steps.version-numbers.outputs.wise_top_version }}
+    #     mvn versions:use-dep-version -Dincludes=ca.hss:hss-java -DdepVersion=${{ steps.version-numbers.outputs.hss_java_version }} -DforceVersion=true
+    #     mvn versions:use-dep-version -Dincludes=ca.hss.times:wtime -DdepVersion=${{ steps.version-numbers.outputs.wtime_version }} -DforceVersion=true
+    #     mvn versions:commit
+    #     cd -
+    #     cd WISE_FBP_Module/java
+    #     mvn versions:set -DnewVersion=${{ steps.version-numbers.outputs.wise_top_version }}
+    #     mvn versions:use-dep-version -Dincludes=ca.hss:hss-java -DdepVersion=${{ steps.version-numbers.outputs.hss_java_version }} -DforceVersion=true
+    #     mvn versions:use-dep-version -Dincludes=ca.hss.times:wtime -DdepVersion=${{ steps.version-numbers.outputs.wtime_version }} -DforceVersion=true
+    #     mvn versions:use-dep-version -Dincludes=ca.hss:math -DdepVersion=${{ steps.version-numbers.outputs.hss_math_version }} -DforceVersion=true
+    #     mvn versions:use-dep-version -Dincludes=ca.wise:fwi -DdepVersion=${{ steps.version-numbers.outputs.wise_top_version }} -DforceVersion=true
+    #     mvn versions:commit
+    #     cd -
+    #     cd WISE_Grid_Module/java
+    #     mvn versions:set -DnewVersion=${{ steps.version-numbers.outputs.wise_top_version }}
+    #     mvn versions:use-dep-version -Dincludes=ca.hss.times:wtime -DdepVersion=${{ steps.version-numbers.outputs.wtime_version }} -DforceVersion=true
+    #     mvn versions:use-dep-version -Dincludes=ca.hss:math -DdepVersion=${{ steps.version-numbers.outputs.hss_math_version }} -DforceVersion=true
+    #     mvn versions:use-dep-version -Dincludes=ca.wise:fuel -DdepVersion=${{ steps.version-numbers.outputs.wise_top_version }} -DforceVersion=true
+    #     mvn versions:commit
+    #     cd -
+    #     cd WISE_Weather_Module/java
+    #     mvn versions:set -DnewVersion=${{ steps.version-numbers.outputs.wise_top_version }}
+    #     mvn versions:use-dep-version -Dincludes=ca.hss:hss-java -DdepVersion=${{ steps.version-numbers.outputs.hss_java_version }} -DforceVersion=true
+    #     mvn versions:use-dep-version -Dincludes=ca.hss.times:wtime -DdepVersion=${{ steps.version-numbers.outputs.wtime_version }} -DforceVersion=true
+    #     mvn versions:use-dep-version -Dincludes=ca.hss:math -DdepVersion=${{ steps.version-numbers.outputs.hss_math_version }} -DforceVersion=true
+    #     mvn versions:use-dep-version -Dincludes=ca.wise:grid -DdepVersion=${{ steps.version-numbers.outputs.wise_top_version }} -DforceVersion=true
+    #     mvn versions:commit
+    #     cd -
+    #     cd WISE_Scenario_Growth_Module/java
+    #     mvn versions:set -DnewVersion=${{ steps.version-numbers.outputs.wise_top_version }}
+    #     mvn versions:use-dep-version -Dincludes=ca.hss.times:wtime -DdepVersion=${{ steps.version-numbers.outputs.wtime_version }} -DforceVersion=true
+    #     mvn versions:use-dep-version -Dincludes=ca.hss:math -DdepVersion=${{ steps.version-numbers.outputs.hss_math_version }} -DforceVersion=true
+    #     mvn versions:use-dep-version -Dincludes=ca.wise:grid -DdepVersion=${{ steps.version-numbers.outputs.wise_top_version }} -DforceVersion=true
+    #     mvn versions:commit
+    #     cd -
+    #     cd WISE_Application/WISE_Project/java
+    #     mvn versions:set -DnewVersion=${{ steps.version-numbers.outputs.wise_top_version }}
+    #     mvn versions:use-dep-version -Dincludes=ca.hss.times:wtime -DdepVersion=${{ steps.version-numbers.outputs.wtime_version }} -DforceVersion=true
+    #     mvn versions:use-dep-version -Dincludes=ca.wise:grid -DdepVersion=${{ steps.version-numbers.outputs.wise_top_version }} -DforceVersion=true
+    #     mvn versions:use-dep-version -Dincludes=ca.wise:fire_engine -DdepVersion=${{ steps.version-numbers.outputs.wise_top_version }} -DforceVersion=true
+    #     mvn versions:use-dep-version -Dincludes=ca.wise:weather -DdepVersion=${{ steps.version-numbers.outputs.wise_top_version }} -DforceVersion=true
+    #     mvn versions:commit
+    #     cd -
+    #     cd REDapp_Lib
+    #     mvn versions:set -DnewVersion=${{ steps.version-numbers.outputs.wise_top_version }}
+    #     mvn versions:use-dep-version -Dincludes=ca.hss:hss-java -DdepVersion=${{ steps.version-numbers.outputs.hss_java_version }} -DforceVersion=true
+    #     mvn versions:use-dep-version -Dincludes=ca.hss.times:wtime -DdepVersion=${{ steps.version-numbers.outputs.wtime_version }} -DforceVersion=true
+    #     mvn versions:use-dep-version -Dincludes=ca.wise:fuel -DdepVersion=${{ steps.version-numbers.outputs.wise_top_version }} -DforceVersion=true
+    #     mvn versions:use-dep-version -Dincludes=ca.wise:weather -DdepVersion=${{ steps.version-numbers.outputs.wise_top_version }} -DforceVersion=true
+    #     mvn versions:commit
+    #     cd -
+    #     cd WISE_Builder_Component/Builder_Lib
+    #     mvn versions:set -DnewVersion=${{ steps.version-numbers.outputs.wise_top_version }}
+    #     mvn versions:use-dep-version -Dincludes=ca.hss:hss-java -DdepVersion=${{ steps.version-numbers.outputs.hss_java_version }} -DforceVersion=true
+    #     mvn versions:use-dep-version -Dincludes=ca.hss.times:wtime -DdepVersion=${{ steps.version-numbers.outputs.wtime_version }} -DforceVersion=true
+    #     mvn versions:use-dep-version -Dincludes=ca.wise:project -DdepVersion=${{ steps.version-numbers.outputs.wise_top_version }} -DforceVersion=true
+    #     mvn versions:use-dep-version -Dincludes=ca.wise:wise-defaults -DdepVersion=${{ steps.version-numbers.outputs.wise_top_version }} -DforceVersion=true
+    #     mvn versions:use-dep-version -Dincludes=ca.wise:javaapi -DdepVersion=${{ steps.version-numbers.outputs.wise_top_version }} -DforceVersion=true
+    #     mvn versions:use-dep-version -Dincludes=ca.cwfgm:REDapp_Lib -DdepVersion=${{ steps.version-numbers.outputs.wise_top_version }} -DforceVersion=true
+    #     mvn versions:commit
+    #     cd -
+    #     cd WISE_Builder_Component/Builder
+    #     mvn versions:set -DnewVersion=${{ steps.version-numbers.outputs.wise_top_version }}
+    #     mvn versions:use-dep-version -Dincludes=ca.hss:hss-java -DdepVersion=${{ steps.version-numbers.outputs.hss_java_version }} -DforceVersion=true
+    #     mvn versions:use-dep-version -Dincludes=ca.hss.times:wtime -DdepVersion=${{ steps.version-numbers.outputs.wtime_version }} -DforceVersion=true
+    #     mvn versions:use-dep-version -Dincludes=ca.wise:WISE_Builder_Lib -DdepVersion=${{ steps.version-numbers.outputs.wise_top_version }} -DforceVersion=true
+    #     mvn versions:use-dep-version -Dincludes=ca.cwfgm:REDapp_Lib -DdepVersion=${{ steps.version-numbers.outputs.wise_top_version }} -DforceVersion=true
+    #     mvn versions:use-dep-version -Dincludes=ca.wise:wise-defaults -DdepVersion=${{ steps.version-numbers.outputs.wise_top_version }} -DforceVersion=true
+    #     mvn versions:commit
+    #     cd -
+    
+    # - name: Download protobuf
+    #   shell: pwsh
+    #   run: |
+    #     Invoke-WebRequest "https://heartlandsoftwaresolutions.sharepoint.com/:u:/g/HSS_Releases/EUZ4knsEFP5FjNHHWR5dHc0BofAFyEPdLKRvzAgaTuDi1w?e=XW0Muc&download=1" -OutFile protobuf.zip
+    #     Expand-Archive protobuf.zip -DestinationPath protobuf
+    #     mv protobuf/protobuf-3.${{ env.PROTO_VERSION }}/* protobuf
+        
+    # - name: Build protobuf
+    #   shell: pwsh
+    #   run: |
+    #     cd protobuf
+    #     cd cmake
+    #     mkdir build
+    #     cd build
+    #     cmake ../ -DCMAKE_BUILD_TYPE=Release -DCMAKE_POSITION_INDEPENDENT_CODE=ON
+    #     cmake --build . --target protoc
+        
+    # - name: Build Proto definition files
+    #   shell: pwsh
+    #   run: |
+    #     cd WISE_FBP_Module
+    #     ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto accAlpha.proto
+    #     ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto ccwfgmFuel.proto
+    #     ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto cfb.proto
+    #     ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto dbh.proto
+    #     ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto flame.proto
+    #     ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto fmc.proto
+    #     ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto fuelNames.proto
+    #     ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto isf.proto
+    #     ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto lb.proto
+    #     ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto rsi.proto
+    #     ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto sfc.proto
+    #     ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto spreadParms.proto
+    #     ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto tfc.proto
+    #     cd ../WISE_Grid_Module
+    #     ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto cwfgmFilter.proto
+    #     ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto cwfgmFuelMap.proto
+    #     ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto cwfgmGrid.proto
+    #     ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto wcsData.proto
+    #     cd ../WISE_Weather_Module
+    #     ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto cwfgmWeatherStation.proto
+    #     ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto cwfgmWeatherStream.proto
+    #     ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto dailyConditions.proto
+    #     ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto weatherGridFilter.proto
+    #     ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto weatherStream.proto
+    #     ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto windGrid.proto
+    #     cd ../WISE_Scenario_Growth_Module
+    #     ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto cwfgmFire.proto
+    #     ../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../protobuf/src --proto_path ../proto cwfgmScenario.proto
+    #     cd ../WISE_Application/WISE_Project
+    #     ../../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../../protobuf/src --proto_path ../../proto assetCollection.proto
+    #     ../../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../../protobuf/src --proto_path ../../proto cwfgmProject.proto
+    #     ../../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../../protobuf/src --proto_path ../../proto fuelCollection.proto
+    #     ../../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../../protobuf/src --proto_path ../../proto gridCollection.proto
+    #     ../../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../../protobuf/src --proto_path ../../proto projectGridFilter.proto
+    #     ../../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../../protobuf/src --proto_path ../../proto projectIgnition.proto
+    #     ../../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../../protobuf/src --proto_path ../../proto projectScenario.proto
+    #     ../../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../../protobuf/src --proto_path ../../proto projectWindGrid.proto
+    #     ../../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../../protobuf/src --proto_path ../../proto staticPoints.proto
+    #     ../../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../../protobuf/src --proto_path ../../proto summary.proto
+    #     ../../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../../protobuf/src --proto_path ../../proto vectorCollection.proto
+    #     ../../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../../protobuf/src --proto_path ../../proto viewStorage.proto
+    #     ../../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../../protobuf/src --proto_path ../../proto weatherStation.proto
+    #     cd ../../WISE_Communications_Module/WISE_Defaults
+    #     ../../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../../protobuf/src --proto_path proto wise_config.proto
+    #     ../../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../../protobuf/src --proto_path proto wise_defaults.proto
+    #     ../../protobuf/cmake/build/protoc --experimental_allow_proto3_optional --java_out java/src/main/java --proto_path ../../protobuf/src --proto_path proto manager_settings.proto
+
+    # - name: Build the libraries
+    #   id: library-build
+    #   run: |
+    #     cd WISE_Communications_Module/WISE_Defaults/java
+    #     mvn --batch-mode install
+    #     cd -
+    #     cd WISE_Java_API
+    #     mvn --batch-mode install
+    #     cd -
+    #     cd WISE_FWI_Module/java
+    #     mvn --batch-mode install
+    #     mvn --batch-mode deploy
+    #     cd -
+    #     cd WISE_FBP_Module/java
+    #     mvn --batch-mode install
+    #     mvn --batch-mode deploy
+    #     cd -
+    #     cd WISE_Grid_Module/java
+    #     mvn --batch-mode install
+    #     mvn --batch-mode deploy
+    #     cd -
+    #     cd WISE_Weather_Module/java
+    #     mvn --batch-mode install
+    #     mvn --batch-mode deploy
+    #     cd -
+    #     cd WISE_Scenario_Growth_Module/java
+    #     mvn --batch-mode install
+    #     mvn --batch-mode deploy
+    #     cd -
+    #     cd WISE_Application/WISE_Project/java
+    #     mvn --batch-mode install
+    #     cd -
+    #     cd REDapp_Lib
+    #     mvn --batch-mode install
+    #     cd -
+    #     cd WISE_Builder_Component/Builder_Lib
+    #     mvn --batch-mode install
+    #     cd -
+    #     cd WISE_Builder_Component/Builder
+    #     mvn --batch-mode package
+    #     CURRENT_DATE=$(date +'%Y%m%d')
+    #     echo "build_date=$CURRENT_DATE" >> $GITHUB_OUTPUT
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.WISE_PAT }}
+    
+    # - name: Archive generated files
+    #   shell: pwsh
+    #   run: |
+    #     cd WISE_Builder_Component
+    #     Compress-Archive -DestinationPath WISE_Builder-${{ steps.version-numbers.outputs.wise_top_version }}.zip -Path Builder/target/WISE_Builder.jar,Builder/target/WISE_Builder_lib
+
+    # - name: Get Last Tags
+    #   id: last-tags
+    #   run: |
+    #     cd WISE_Builder_Component
+    #     LAST_TAG=$(git describe --abbrev=0 --tags)
+    #     echo "WISE_Builder_Component_tag=$LAST_TAG" >> $GITHUB_OUTPUT
+
+    # - name: Tag the repositories
+    #   run: |
+    #     cd WISE_Communications_Module
+    #     git config user.name github-actions
+    #     git config user.email github-actions@github.com
+    #     git tag -a Builder_${{ steps.version-numbers.outputs.wise_top_version }} -m "W.I.S.E. Builder release on $(date +'%Y-%m-%d') for commit $(git rev-parse HEAD)"
+    #     cd -
+    #     cd WISE_Java_API
+    #     git config user.name github-actions
+    #     git config user.email github-actions@github.com
+    #     git tag -a Builder_${{ steps.version-numbers.outputs.wise_top_version }} -m "W.I.S.E. Builder release on $(date +'%Y-%m-%d') for commit $(git rev-parse HEAD)"
+    #     cd -
+    #     cd WISE_FWI_Module
+    #     git config user.name github-actions
+    #     git config user.email github-actions@github.com
+    #     git tag -a Builder_${{ steps.version-numbers.outputs.wise_top_version }} -m "W.I.S.E. Builder release on $(date +'%Y-%m-%d') for commit $(git rev-parse HEAD)"
+    #     cd -
+    #     cd WISE_FBP_Module
+    #     git config user.name github-actions
+    #     git config user.email github-actions@github.com
+    #     git tag -a Builder_${{ steps.version-numbers.outputs.wise_top_version }} -m "W.I.S.E. Builder release on $(date +'%Y-%m-%d') for commit $(git rev-parse HEAD)"
+    #     cd -
+    #     cd WISE_Grid_Module
+    #     git config user.name github-actions
+    #     git config user.email github-actions@github.com
+    #     git tag -a Builder_${{ steps.version-numbers.outputs.wise_top_version }} -m "W.I.S.E. Builder release on $(date +'%Y-%m-%d') for commit $(git rev-parse HEAD)"
+    #     cd -
+    #     cd WISE_Weather_Module
+    #     git config user.name github-actions
+    #     git config user.email github-actions@github.com
+    #     git tag -a Builder_${{ steps.version-numbers.outputs.wise_top_version }} -m "W.I.S.E. Builder release on $(date +'%Y-%m-%d') for commit $(git rev-parse HEAD)"
+    #     cd -
+    #     cd WISE_Scenario_Growth_Module
+    #     git config user.name github-actions
+    #     git config user.email github-actions@github.com
+    #     git tag -a Builder_${{ steps.version-numbers.outputs.wise_top_version }} -m "W.I.S.E. Builder release on $(date +'%Y-%m-%d') for commit $(git rev-parse HEAD)"
+    #     cd -
+    #     cd WISE_Application
+    #     git config user.name github-actions
+    #     git config user.email github-actions@github.com
+    #     git tag -a Builder_${{ steps.version-numbers.outputs.wise_top_version }} -m "W.I.S.E. Builder release on $(date +'%Y-%m-%d') for commit $(git rev-parse HEAD)"
+    #     cd -
+    #     cd REDapp_Lib
+    #     git config user.name github-actions
+    #     git config user.email github-actions@github.com
+    #     git tag -a Builder_${{ steps.version-numbers.outputs.wise_top_version }} -m "W.I.S.E. Builder release on $(date +'%Y-%m-%d') for commit $(git rev-parse HEAD)"
+    #     cd -
+    #     cd WISE_Builder_Component
+    #     git config user.name github-actions
+    #     git config user.email github-actions@github.com
+    #     git tag -a ${{ steps.version-numbers.outputs.wise_top_version }} -m "W.I.S.E. Builder release on $(date +'%Y-%m-%d') for commit $(git rev-parse HEAD)"
+        
+    # - name: Push versions changes
+    #   uses: ad-m/github-push-action@master
+    #   with:
+    #     github_token: ${{ secrets.WISE_PAT }}
+    #     repository: WISE-Developers/WISE_Communications_Module
+    #     directory: WISE_Communications_Module
+    #     tags: true
+        
+    # - name: Push versions changes
+    #   uses: ad-m/github-push-action@master
+    #   with:
+    #     github_token: ${{ secrets.WISE_PAT }}
+    #     repository: WISE-Developers/WISE_Java_API
+    #     directory: WISE_Java_API
+    #     tags: true
+        
+    # - name: Push versions changes
+    #   uses: ad-m/github-push-action@master
+    #   with:
+    #     github_token: ${{ secrets.WISE_PAT }}
+    #     repository: WISE-Developers/WISE_FWI_Module
+    #     directory: WISE_FWI_Module
+    #     tags: true
+        
+    # - name: Push versions changes
+    #   uses: ad-m/github-push-action@master
+    #   with:
+    #     github_token: ${{ secrets.WISE_PAT }}
+    #     repository: WISE-Developers/WISE_FBP_Module
+    #     directory: WISE_FBP_Module
+    #     tags: true
+        
+    # - name: Push versions changes
+    #   uses: ad-m/github-push-action@master
+    #   with:
+    #     github_token: ${{ secrets.WISE_PAT }}
+    #     repository: WISE-Developers/WISE_Grid_Module
+    #     directory: WISE_Grid_Module
+    #     tags: true
+        
+    # - name: Push versions changes
+    #   uses: ad-m/github-push-action@master
+    #   with:
+    #     github_token: ${{ secrets.WISE_PAT }}
+    #     repository: WISE-Developers/WISE_Weather_Module
+    #     directory: WISE_Weather_Module
+    #     tags: true
+        
+    # - name: Push versions changes
+    #   uses: ad-m/github-push-action@master
+    #   with:
+    #     github_token: ${{ secrets.WISE_PAT }}
+    #     repository: WISE-Developers/WISE_Scenario_Growth_Module
+    #     directory: WISE_Scenario_Growth_Module
+    #     tags: true
+        
+    # - name: Push versions changes
+    #   uses: ad-m/github-push-action@master
+    #   with:
+    #     github_token: ${{ secrets.WISE_PAT }}
+    #     repository: WISE-Developers/WISE_Application
+    #     directory: WISE_Application
+    #     tags: true
+        
+    # - name: Push versions changes
+    #   uses: ad-m/github-push-action@master
+    #   with:
+    #     github_token: ${{ secrets.WISE_PAT }}
+    #     repository: WISE-Developers/REDapp_Lib
+    #     directory: REDapp_Lib
+    #     tags: true
+        
+    # - name: Push versions changes
+    #   uses: ad-m/github-push-action@master
+    #   with:
+    #     github_token: ${{ secrets.WISE_PAT }}
+    #     repository: WISE-Developers/WISE_Builder_Component
+    #     directory: WISE_Builder_Component
+    #     tags: true
+
+    # - name: Create Builder Release Notes
+    #   id: builder-notes
+    #   uses: mikepenz/release-changelog-builder-action@v3.5.0
+    #   with:
+    #     owner: WISE-Developers
+    #     repo: WISE_Builder_Component
+    #     toTag: ${{ steps.version-numbers.outputs.wise_top_version }}
+    #     fromTag: ${{ steps.last-tags.outputs.WISE_Builder_Component_tag }}
+    #   env:
+    #     GITHUB_TOKEN: ${{ secrets.WISE_PAT }}
+
+    # - name: Create release
+    #   uses: softprops/action-gh-release@v1
+    #   with:
+    #     name: ${{ steps.version-numbers.outputs.wise_top_version }}
+    #     body: ${{ steps.builder-notes.outputs.changelog }}
+    #     files: WISE_Builder_Component/*.zip
+    #     tag_name: refs/tags/${{ steps.version-numbers.outputs.wise_top_version }}
